@@ -33,4 +33,12 @@ public class DependencyChecking<T> where T : IEquatable<T> {
         }
         return dependents;
     }
+
+    public int Depth(T value) {
+        List<int> depths = new() { 0 };
+        foreach (T dependent in values[value]) {
+            depths.Add(1 + Depth(dependent));
+        }
+        return depths.Max();
+    }
 }
