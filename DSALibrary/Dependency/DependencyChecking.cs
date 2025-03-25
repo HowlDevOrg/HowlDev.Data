@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace DSALibrary.Dependency;
 
@@ -35,10 +36,11 @@ public class DependencyChecking<T> where T : IEquatable<T> {
     }
 
     public int Depth(T value) {
-        List<int> depths = new() { 0 };
+        int max = 0;
         foreach (T dependent in values[value]) {
-            depths.Add(1 + Depth(dependent));
+            int newDepth = 1 + Depth(dependent);
+            if (max < newDepth) max = newDepth;
         }
-        return depths.Max();
+        return max;
     }
 }
