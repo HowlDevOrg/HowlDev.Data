@@ -85,4 +85,16 @@ public class Tests {
 
         await Assert.That(d.MaximumDepth).IsEqualTo(1);
     }
+
+    [Test]
+    public async Task CanGetDependentValues1() {
+        Dictionary<int, List<int>> dict = new Dictionary<int, List<int>> {
+            { 1, new List<int>() },
+            { 2, new List<int>() { 1 } }
+        };
+
+        DependencyChecking<int> d = new DependencyChecking<int>(dict);
+
+        await Assert.That(d.DependentValues(1)).IsEqualTo(new List<int>() { 2 });
+    }
 }

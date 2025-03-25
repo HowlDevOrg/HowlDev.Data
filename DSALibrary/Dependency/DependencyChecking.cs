@@ -23,4 +23,14 @@ public class DependencyChecking<T> where T : IEquatable<T> {
             return distinct.Count;
         }
     }
+
+    public List<T> DependentValues(T value) {
+        List<T> dependents = new();
+        foreach (KeyValuePair<T, List<T>> pair in values) {
+            if (pair.Value.Contains(value)) {
+                dependents.Add(pair.Key);
+            }
+        }
+        return dependents;
+    }
 }
