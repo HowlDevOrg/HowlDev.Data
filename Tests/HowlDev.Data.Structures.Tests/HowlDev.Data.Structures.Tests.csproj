@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit" Version="0.18.60" />
+    <PackageReference Include="TUnit" Version="1.5.53" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DSALibrary\DSALibrary.csproj" />
+    <ProjectReference Include="..\..\HowlDev.Data.Structures\HowlDev.Data.Structures.csproj" />
   </ItemGroup>
 
 </Project>

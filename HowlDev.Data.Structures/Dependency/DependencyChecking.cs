@@ -1,7 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-
-namespace HowlDev.Data.Structures.Dependency;
+﻿namespace HowlDev.Data.Structures.Dependency;
 
 public class DependencyChecking<T> where T : IEquatable<T> {
     private readonly Dictionary<T, List<T>> values;
