@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TUnit.Assertions.AssertConditions.Throws;
 
-namespace DSALibrary.Tests;
+namespace HowlDev.Data.Structures.Tests;
 
 public class Tests {
     [Test]
