@@ -1,7 +1,4 @@
-﻿namespace HowlDev.Data.Probability.Sampling
-{
-    public class Class1
-    {
+﻿namespace HowlDev.Data.Probability.Sampling; 
+public class Class1 {
 
-    }
 }

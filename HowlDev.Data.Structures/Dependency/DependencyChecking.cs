@@ -10,7 +10,7 @@ public class DependencyChecking<T> where T : IEquatable<T> {
     public int Count { get => values.Count; }
     public int MaximumDepth {
         get {
-            List<T> distinct = new();
+            List<T> distinct = [];
             foreach (KeyValuePair<T, List<T>> pair in values) {
                 foreach (T value in pair.Value) {
                     if (!distinct.Contains(value)) {
@@ -18,17 +18,19 @@ public class DependencyChecking<T> where T : IEquatable<T> {
                     }
                 }
             }
+
             return distinct.Count;
         }
     }
 
     public List<T> DependentValues(T value) {
-        List<T> dependents = new();
+        List<T> dependents = [];
         foreach (KeyValuePair<T, List<T>> pair in values) {
             if (pair.Value.Contains(value)) {
                 dependents.Add(pair.Key);
             }
         }
+
         return dependents;
     }
 
@@ -38,6 +40,7 @@ public class DependencyChecking<T> where T : IEquatable<T> {
             int newDepth = 1 + Depth(dependent);
             if (max < newDepth) max = newDepth;
         }
+
         return max;
     }
 }

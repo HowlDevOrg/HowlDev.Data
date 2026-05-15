@@ -4,7 +4,7 @@ namespace HowlDev.Data.Structures.Tests;
 public class Tests {
     [Test]
     public async Task CanCreateDependency() {
-        DependencyChecking<int> d = new DependencyChecking<int>([]);
+        _ = new DependencyChecking<int>([]);
         await Assert.That(true).IsEqualTo(true);
     }
 
@@ -32,8 +32,7 @@ public class Tests {
 
     [Test]
     public async Task GeneratingDuplicateKeyThrowsException() {
-        await Assert.That(() =>
-        {
+        await Assert.That(() => {
             Dictionary<int, List<int>> dict = new Dictionary<int, List<int>> {
                 { 1, new List<int>() },
                 { 1, new List<int>() { 1 } }

@@ -1,7 +1,4 @@
-﻿namespace HowlDev.Data.Algorithms
-{
-    public class Class1
-    {
+﻿namespace HowlDev.Data.Algorithms; 
+public class Class1 {
 
-    }
 }
