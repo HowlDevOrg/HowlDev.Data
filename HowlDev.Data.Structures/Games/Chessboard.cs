@@ -19,6 +19,7 @@ namespace HowlDev.Data.Structures.Games;
 // d = Black Rook
 // e = Black Pawn
 
+// This makes an array that.. 
 [InlineArray(32)]
 internal struct ChessboardData {
     private byte square;

@@ -16,12 +16,15 @@ public class PlainChessBoardTests {
         for (int i = 8; i < 16; i++) {
             await Assert.That(c.CheckSquare(i)).IsEqualTo((ChessPiece.Pawn, true));
         }
+        
         for (int i = 16; i < 48; i++) {
             await Assert.That(c.CheckSquare(i)).IsEqualTo((null, false));
         }
+
         for (int i = 48; i < 56; i++) {
             await Assert.That(c.CheckSquare(i)).IsEqualTo((ChessPiece.Pawn, false));
         }
+        
         await Assert.That(c.CheckSquare(56)).IsEqualTo((ChessPiece.Rook, false));
         await Assert.That(c.CheckSquare(57)).IsEqualTo((ChessPiece.Knight, false));
         await Assert.That(c.CheckSquare(58)).IsEqualTo((ChessPiece.Bishop, false));
