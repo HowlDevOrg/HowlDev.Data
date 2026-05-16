@@ -71,14 +71,6 @@ public readonly struct Chessboard : IEquatable<Chessboard> {
         }
     }
 
-    // public (ChessPiece? Piece, bool Color) CheckSquare(string position) {
-    //     if (position.Length != 2) throw new ArgumentException("Position is expected to be 2 characters.");
-
-    //     int column = position[0] - 96;
-    //     int row = position[1] - 30;
-
-    // }
-
     private static (ChessPiece? Piece, bool Color) GetPiece(byte piece) {
         int checks = piece & 0x07;
         bool color = (piece & 0x08) == 0;
