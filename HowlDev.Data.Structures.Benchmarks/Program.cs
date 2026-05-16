@@ -4,12 +4,13 @@ using HowlDev.Data.Structures.Games;
 
 namespace HowlDev.Data.Structures.Benchmarks;
 
-[ShortRunJob]
+[MemoryDiagnoser]
+[MediumRunJob]
 public class ChessboardGetValueAtSquare {
     private Chessboard board = new Chessboard();
 
     [Benchmark]
-    public (ChessPiece? Piece, bool Color) GetSquare() => board.CheckSquare(0);
+    public (ChessPiece? Piece, bool Color) GetSquareReadonlyInline() => board.CheckSquare(0);
 }
 
 public class Program {

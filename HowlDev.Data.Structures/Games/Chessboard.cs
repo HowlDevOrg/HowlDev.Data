@@ -30,10 +30,31 @@ internal struct ChessboardData {
 /// 
 /// This holds an internal byte array for optimized Chess checking. 
 /// </summary>
-public struct Chessboard : IEquatable<Chessboard> {
-    private ChessboardData board;
+public readonly struct Chessboard : IEquatable<Chessboard> {
+    private readonly ChessboardData board;
     public Chessboard() {
-        DefaultBoard();
+        ChessboardData data = new ChessboardData();
+        data[0] = 0x54;
+        data[1] = 0x32;
+        data[2] = 0x13;
+        data[3] = 0x45;
+        data[4] = 0x66;
+        data[5] = 0x66;
+        data[6] = 0x66;
+        data[7] = 0x66;
+        for (int i = 8; i < 24; i++) {
+            data[i] = 0x00;
+        }
+
+        data[24] = 0xee;
+        data[25] = 0xee;
+        data[26] = 0xee;
+        data[27] = 0xee;
+        data[28] = 0xdc;
+        data[29] = 0xba;
+        data[30] = 0x9b;
+        data[31] = 0xcd;
+        board = data;
     }
 
     public readonly (ChessPiece? Piece, bool Color) CheckSquare(int index) {
@@ -68,45 +89,10 @@ public struct Chessboard : IEquatable<Chessboard> {
         };
     }
 
-    private void DefaultBoard() {
-        ChessboardData data = new ChessboardData();
-        data[0] = 0x54;
-        data[1] = 0x32;
-        data[2] = 0x13;
-        data[3] = 0x45;
-        data[4] = 0x66;
-        data[5] = 0x66;
-        data[6] = 0x66;
-        data[7] = 0x66;
-        for (int i = 8; i < 24; i++) {
-            data[i] = 0x00;
-        }
-        
-        data[24] = 0xee;
-        data[25] = 0xee;
-        data[26] = 0xee;
-        data[27] = 0xee;
-        data[28] = 0xdc;
-        data[29] = 0xba;
-        data[30] = 0x9b;
-        data[31] = 0xcd;
-        board = data;
-        // data = [
-        //     0x54, 0x32, 0x13, 0x45,
-        //     0x66, 0x66, 0x66, 0x66,
-        //     0x00, 0x00, 0x00, 0x00,
-        //     0x00, 0x00, 0x00, 0x00,
-        //     0x00, 0x00, 0x00, 0x00,
-        //     0x00, 0x00, 0x00, 0x00,
-        //     0xee, 0xee, 0xee, 0xee,
-        //     0xdc, 0xba, 0x9b, 0xcd,
-        // ];
-    }
-
     public static bool operator !=(Chessboard left, Chessboard right) {
         return !left.Equals(right);
     }
-    
+
     public static bool operator ==(Chessboard left, Chessboard right) {
         return left.Equals(right);
     }
@@ -125,7 +111,7 @@ public struct Chessboard : IEquatable<Chessboard> {
         for (int i = 0; i < 32; i++) {
             if (board[i] != other.board[i]) return false;
         }
-        
+
         return true;
     }
 }
