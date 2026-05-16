@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace HowlDev.Data.Structures.Games;
+namespace HowlDev.Data.Structures.Games.Chess;
 
 // CHESS KEY: 
 // Positioning is white along the top.
@@ -54,6 +54,10 @@ public readonly struct Chessboard : IEquatable<Chessboard> {
         data[29] = 0xba;
         data[30] = 0x9b;
         data[31] = 0xcd;
+        board = data;
+    }
+
+    private Chessboard(ChessboardData data) {
         board = data;
     }
 

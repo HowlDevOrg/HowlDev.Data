@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
-using HowlDev.Data.Structures.Games;
+using HowlDev.Data.Structures.Games.Chess;
 
 namespace HowlDev.Data.Structures.Benchmarks;
 

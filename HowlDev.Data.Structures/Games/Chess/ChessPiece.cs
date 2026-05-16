@@ -1,4 +1,4 @@
-namespace HowlDev.Data.Structures.Games;
+namespace HowlDev.Data.Structures.Games.Chess;
 
 public enum ChessPiece {
     King,

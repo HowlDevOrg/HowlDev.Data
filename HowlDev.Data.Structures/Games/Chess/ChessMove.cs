@@ -1,3 +1,3 @@
-namespace HowlDev.Data.Structures.Games;
+namespace HowlDev.Data.Structures.Games.Chess;
 
 public record struct ChessMove(int From, int To, ChessPiece Piece);

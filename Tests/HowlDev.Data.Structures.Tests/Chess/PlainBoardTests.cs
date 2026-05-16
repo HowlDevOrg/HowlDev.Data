@@ -1,4 +1,4 @@
-using HowlDev.Data.Structures.Games;
+using HowlDev.Data.Structures.Games.Chess;
 namespace HowlDev.Data.Structures.Tests;
 
 public class PlainChessBoardTests {
