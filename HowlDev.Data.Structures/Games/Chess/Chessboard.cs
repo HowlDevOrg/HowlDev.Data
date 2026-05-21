@@ -21,12 +21,17 @@ namespace HowlDev.Data.Structures.Games.Chess;
 
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
+    private List<(ChessPiece Piece, int index)> whitePieces;
+    private List<(ChessPiece Piece, int index)> blackPieces;
+
     public Chessboard() {
         board = DefaultBoard();
+        whitePieces = [.. CalculateChessLists(true)];
+        blackPieces = [.. CalculateChessLists(false)];
     }
 
-    public (ChessPiece Piece, bool Color)? CheckSquare(int index) {
-        if (index < 0 || index > 63) throw new ArgumentException("Chess index is out of bounds.");
+    public (ChessPiece Piece, bool White)? CheckSquare(int index) {
+        if (index < 0 || index > 63) ThrowIndexException();
         (int quot, int rem) = Math.DivRem(index, 2); // Calculates arrayIndex and modulo in one go
         if (rem == 0) {
             return GetPiece(ByteAdjustment.LeftHalf(board[quot]));
@@ -36,13 +41,20 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public (ChessPiece Piece, bool Color)? CheckSquare(int row, int col) {
+    public (ChessPiece Piece, bool White)? CheckSquare(int row, int col) {
         return CheckSquare(ChessHelpers.RowColToIndex(row, col));
     }
 
-    private static (ChessPiece Piece, bool Color)? GetPiece(byte piece) {
+    /// <summary>
+    /// Gets all pieces with an associated color and their index. 
+    /// </summary>
+    public IEnumerable<(ChessPiece Piece, int index)> GetChessPieces(bool white) {
+        return white ? whitePieces : blackPieces;
+    }
+
+    private static (ChessPiece Piece, bool White)? GetPiece(byte piece) {
         int checks = piece & 0x07;
-        bool color = (piece & 0x08) == 0;
+        bool color = (piece & 0x08) != 0;
         return checks switch {
             1 => (ChessPiece.King, color),
             2 => (ChessPiece.Queen, color),
@@ -54,28 +66,37 @@ public class Chessboard : IEquatable<Chessboard> {
         };
     }
 
+    private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
+        for (int i = 0; i < 64; i++) {
+            (ChessPiece Piece, bool White)? option = CheckSquare(i);
+            if (option is not null && option.Value.White == white) {
+                yield return (option.Value.Piece, i);
+            }
+        }
+    }
+
     private static byte[] DefaultBoard() {
         byte[] data = new byte[32];
-        data[0] = 0x54;
-        data[1] = 0x32;
-        data[2] = 0x13;
-        data[3] = 0x45;
-        data[4] = 0x66;
-        data[5] = 0x66;
-        data[6] = 0x66;
-        data[7] = 0x66;
+        data[0] = 0xdc;
+        data[1] = 0xba;
+        data[2] = 0x9b;
+        data[3] = 0xcd;
+        data[4] = 0xee;
+        data[5] = 0xee;
+        data[6] = 0xee;
+        data[7] = 0xee;
         for (int i = 8; i < 24; i++) {
             data[i] = 0x00;
         }
 
-        data[24] = 0xee;
-        data[25] = 0xee;
-        data[26] = 0xee;
-        data[27] = 0xee;
-        data[28] = 0xdc;
-        data[29] = 0xba;
-        data[30] = 0x9b;
-        data[31] = 0xcd;
+        data[24] = 0x66;
+        data[25] = 0x66;
+        data[26] = 0x66;
+        data[27] = 0x66;
+        data[28] = 0x54;
+        data[29] = 0x32;
+        data[30] = 0x13;
+        data[31] = 0x45;
         return data;
     }
 
@@ -105,4 +126,7 @@ public class Chessboard : IEquatable<Chessboard> {
 
         return true;
     }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowIndexException() => throw new ArgumentException("Chess index is out of bounds.");
 }
