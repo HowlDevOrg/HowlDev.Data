@@ -29,6 +29,19 @@ public class ChessHelpersRowColTests {
     public async Task IndexConvertsCorrectly(int index, int expRow, int expCol) {
         await Assert.That(ChessHelpers.IndexToRowCol(index)).IsEqualTo((expRow, expCol));
     }
+
+    [Test]
+    [MethodDataSource(nameof(IndexSource))]
+    public async Task IndexToRowColAndBack(int index) {
+        (int row, int col) = ChessHelpers.IndexToRowCol(index);
+        await Assert.That(ChessHelpers.RowColToIndex(row, col)).IsEqualTo(index);
+    }
+
+    public static IEnumerable<Func<int>> IndexSource() {
+        for (int i = 0; i < 64; i++) {
+            yield return () => i;
+        }
+    }
 }
 public class ChessHelpersCharIndexTests {
     [Test]
