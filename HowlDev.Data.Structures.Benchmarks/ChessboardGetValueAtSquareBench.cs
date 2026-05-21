@@ -9,7 +9,9 @@ public class ChessboardGetValueAtSquareBench {
     private Chessboard board = new Chessboard();
 
     [Benchmark]
-    public (ChessPiece? Piece, bool Color) GetSquareReadonlyInlineStart() => board.CheckSquare(0);
+    public (ChessPiece Piece, bool Color)? GetSquareReadonlyInlineStart() => board.CheckSquare(0);
     [Benchmark]
-    public (ChessPiece? Piece, bool Color) GetSquareReadonlyInlineEnd() => board.CheckSquare(63);
+    public (ChessPiece Piece, bool Color)? GetSquareReadonlyInlineReturnsNull() => board.CheckSquare(32);
+    [Benchmark]
+    public (ChessPiece Piece, bool Color)? GetSquareReadonlyInlineEnd() => board.CheckSquare(63);
 }

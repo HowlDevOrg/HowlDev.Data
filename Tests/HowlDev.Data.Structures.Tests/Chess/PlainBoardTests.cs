@@ -18,7 +18,7 @@ public class PlainChessBoardTests {
         }
         
         for (int i = 16; i < 48; i++) {
-            await Assert.That(c.CheckSquare(i)).IsEqualTo((null, false));
+            await Assert.That(c.CheckSquare(i)).IsNull();
         }
 
         for (int i = 48; i < 56; i++) {

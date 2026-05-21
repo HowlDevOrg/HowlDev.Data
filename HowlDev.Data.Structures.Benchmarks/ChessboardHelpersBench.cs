@@ -12,7 +12,7 @@ public class ChessboardHelpersBench {
     [Benchmark]
     public int GetIndexThrowError() {
         try {
-            return ChessHelpers.RowColToIndex(0, 9);
+            return ChessHelpers.RowColToIndex(0, 9); // will throw
         } catch {
             return 0;
         }

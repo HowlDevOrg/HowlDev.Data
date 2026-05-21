@@ -25,7 +25,7 @@ public class Chessboard : IEquatable<Chessboard> {
         board = DefaultBoard();
     }
 
-    public (ChessPiece? Piece, bool Color) CheckSquare(int index) {
+    public (ChessPiece Piece, bool Color)? CheckSquare(int index) {
         if (index < 0 || index > 63) throw new ArgumentException("Chess index is out of bounds.");
         (int quot, int rem) = Math.DivRem(index, 2); // Calculates arrayIndex and modulo in one go
         if (rem == 0) {
@@ -36,11 +36,11 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public (ChessPiece? Piece, bool Color) CheckSquare(int row, int col) {
+    public (ChessPiece Piece, bool Color)? CheckSquare(int row, int col) {
         return CheckSquare(ChessHelpers.RowColToIndex(row, col));
     }
 
-    private static (ChessPiece? Piece, bool Color) GetPiece(byte piece) {
+    private static (ChessPiece Piece, bool Color)? GetPiece(byte piece) {
         int checks = piece & 0x07;
         bool color = (piece & 0x08) == 0;
         return checks switch {
@@ -50,7 +50,7 @@ public class Chessboard : IEquatable<Chessboard> {
             4 => (ChessPiece.Knight, color),
             5 => (ChessPiece.Rook, color),
             6 => (ChessPiece.Pawn, color),
-            _ => (null, false)
+            _ => null
         };
     }
 
