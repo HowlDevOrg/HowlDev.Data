@@ -1,5 +1,3 @@
-using System.Runtime.CompilerServices;
-
 namespace HowlDev.Data.Structures.Games.Chess;
 
 // CHESS KEY: 
@@ -19,21 +17,40 @@ namespace HowlDev.Data.Structures.Games.Chess;
 // d = Black Rook
 // e = Black Pawn
 
-// This makes an array that.. 
-[InlineArray(32)]
-internal struct ChessboardData {
-    private byte square;
-}
-
-/// <summary>
-/// This struct allows you to play chess with all the game rules implemented. 
-/// 
-/// This holds an internal byte array for optimized Chess checking. 
-/// </summary>
-public readonly struct Chessboard : IEquatable<Chessboard> {
-    private readonly ChessboardData board;
+public class Chessboard : IEquatable<Chessboard> {
+    private byte[] board;
     public Chessboard() {
-        ChessboardData data = new ChessboardData();
+        board = DefaultBoard();
+    }
+
+    public (ChessPiece? Piece, bool Color) CheckSquare(int index) {
+        if (index < 0 || index > 63) throw new ArgumentException("Chess index is out of bounds.");
+        (int quot, int rem) = Math.DivRem(index, 2); // Calculates arrayIndex and modulo in one go
+        if (rem == 0) {
+            return GetPiece(ByteAdjustment.LeftHalf(board[quot]));
+        } else {
+            return GetPiece(ByteAdjustment.RightHalf(board[quot]));
+        }
+    }
+
+    public static int ConvertRowColToIndex(int row, int col) => ChessHelpers.RowColToIndex(row, col);
+
+    private static (ChessPiece? Piece, bool Color) GetPiece(byte piece) {
+        int checks = piece & 0x07;
+        bool color = (piece & 0x08) == 0;
+        return checks switch {
+            1 => (ChessPiece.King, color),
+            2 => (ChessPiece.Queen, color),
+            3 => (ChessPiece.Bishop, color),
+            4 => (ChessPiece.Knight, color),
+            5 => (ChessPiece.Rook, color),
+            6 => (ChessPiece.Pawn, color),
+            _ => (null, false)
+        };
+    }
+
+    private static byte[] DefaultBoard() {
+        byte[] data = new byte[32];
         data[0] = 0x54;
         data[1] = 0x32;
         data[2] = 0x13;
@@ -54,35 +71,7 @@ public readonly struct Chessboard : IEquatable<Chessboard> {
         data[29] = 0xba;
         data[30] = 0x9b;
         data[31] = 0xcd;
-        board = data;
-    }
-
-    private Chessboard(ChessboardData data) {
-        board = data;
-    }
-
-    public readonly (ChessPiece? Piece, bool Color) CheckSquare(int index) {
-        if (index < 0 || index > 63) throw new ArgumentException("Chess index is out of bounds.");
-        int arrayIndex = index / 2;
-        if (index % 2 == 0) {
-            return GetPiece(ByteAdjustment.LeftHalf(board[arrayIndex]));
-        } else {
-            return GetPiece(ByteAdjustment.RightHalf(board[arrayIndex]));
-        }
-    }
-
-    private static (ChessPiece? Piece, bool Color) GetPiece(byte piece) {
-        int checks = piece & 0x07;
-        bool color = (piece & 0x08) == 0;
-        return checks switch {
-            1 => (ChessPiece.King, color),
-            2 => (ChessPiece.Queen, color),
-            3 => (ChessPiece.Bishop, color),
-            4 => (ChessPiece.Knight, color),
-            5 => (ChessPiece.Rook, color),
-            6 => (ChessPiece.Pawn, color),
-            _ => (null, false)
-        };
+        return data;
     }
 
     public static bool operator !=(Chessboard left, Chessboard right) {
@@ -93,17 +82,18 @@ public readonly struct Chessboard : IEquatable<Chessboard> {
         return left.Equals(right);
     }
 
-    public readonly override bool Equals(object? obj) {
-        if (obj is not null && obj is Chessboard)
-            return Equals(obj);
+    public override bool Equals(object? obj) {
+        if (obj is not null && obj is Chessboard output)
+            return Equals(output);
         return false;
     }
 
-    public readonly override int GetHashCode() {
+    public override int GetHashCode() {
         return board.GetHashCode();
     }
 
-    public readonly bool Equals(Chessboard other) {
+    public bool Equals(Chessboard? other) {
+        if (other is null) return false;
         for (int i = 0; i < 32; i++) {
             if (board[i] != other.board[i]) return false;
         }
