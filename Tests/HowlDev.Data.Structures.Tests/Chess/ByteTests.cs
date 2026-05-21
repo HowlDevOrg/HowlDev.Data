@@ -1,5 +1,5 @@
 using HowlDev.Data.Structures.Games;
-namespace HowlDev.Data.Structures.Tests;
+namespace HowlDev.Data.Structures.Tests.Chess;
 
 public class ByteTests {
     [Test]

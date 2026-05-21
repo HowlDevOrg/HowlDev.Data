@@ -1,5 +1,5 @@
 using HowlDev.Data.Structures.Games.Chess;
-namespace HowlDev.Data.Structures.Tests;
+namespace HowlDev.Data.Structures.Tests.Chess;
 
 public class PlainChessBoardTests {
     [Test]
@@ -33,5 +33,13 @@ public class PlainChessBoardTests {
         await Assert.That(c.CheckSquare(61)).IsEqualTo((ChessPiece.Bishop, false));
         await Assert.That(c.CheckSquare(62)).IsEqualTo((ChessPiece.Knight, false));
         await Assert.That(c.CheckSquare(63)).IsEqualTo((ChessPiece.Rook, false));
+    }
+
+    [Test]
+    public async Task BoardCorrectlyCalculatesColorLists() {
+        Chessboard c = new Chessboard();
+        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(16);
+        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(16);
+        
     }
 }
