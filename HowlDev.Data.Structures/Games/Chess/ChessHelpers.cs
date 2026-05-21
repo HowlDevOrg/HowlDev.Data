@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace HowlDev.Data.Structures.Games.Chess;
 
 public static class ChessHelpers {
@@ -15,16 +17,25 @@ public static class ChessHelpers {
         return RowColToIndex(row, column);
     }
 
+    // [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int RowColToIndex(int row, int col) {
-        if (row < 1 || row > 8) throw new InvalidDataException($"Row must be between 1 and 8 inclusive. {row}");
-        if (col < 1 || col > 8) throw new InvalidDataException($"Column must be between 1 and 8 inclusive. {col}");
+        if (row < 1 || row > 8) ThrowRowException();
+        if (col < 1 || col > 8) ThrowColException();
 
         return (8 - row) * 8 + col - 1;
     }
 
+    // [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static (int row, int col) IndexToRowCol(int index) {
-        if (index < 0 || index > 63) throw new InvalidDataException($"Index must be between 0 and 63 inclusive. {index}");
+        if (index < 0 || index > 63) ThrowIndexException();
         (int quot, int rem) = Math.DivRem(index, 8);
         return (8 - quot, rem + 1);
     }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowRowException() => throw new InvalidDataException($"Row must be between 1 and 8 inclusive.");
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowColException() => throw new InvalidDataException($"Column must be between 1 and 8 inclusive.");
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static void ThrowIndexException() => throw new InvalidDataException($"Index must be between 0 and 63 inclusive.");
 }

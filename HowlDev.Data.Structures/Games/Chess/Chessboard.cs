@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace HowlDev.Data.Structures.Games.Chess;
 
 // CHESS KEY: 
@@ -33,7 +35,10 @@ public class Chessboard : IEquatable<Chessboard> {
         }
     }
 
-    public static int ConvertRowColToIndex(int row, int col) => ChessHelpers.RowColToIndex(row, col);
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public (ChessPiece? Piece, bool Color) CheckSquare(int row, int col) {
+        return CheckSquare(ChessHelpers.RowColToIndex(row, col));
+    }
 
     private static (ChessPiece? Piece, bool Color) GetPiece(byte piece) {
         int checks = piece & 0x07;

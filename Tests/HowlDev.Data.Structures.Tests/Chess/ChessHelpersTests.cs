@@ -18,6 +18,15 @@ public class ChessHelpersRowColTests {
     }
 
     [Test]
+    [Arguments(8, 0)]
+    [Arguments(9, 8)]
+    [Arguments(0, 1)]
+    [Arguments(7, 9)]
+    public async Task RowColThrowsErrors(int row, int col) {
+        await Assert.That(() => ChessHelpers.RowColToIndex(row, col)).Throws<InvalidDataException>();
+    }
+
+    [Test]
     [Arguments(0, 8, 1)]
     [Arguments(7, 8, 8)]
     [Arguments(8, 7, 1)]
@@ -28,6 +37,14 @@ public class ChessHelpersRowColTests {
     [Arguments(63, 1, 8)]
     public async Task IndexConvertsCorrectly(int index, int expRow, int expCol) {
         await Assert.That(ChessHelpers.IndexToRowCol(index)).IsEqualTo((expRow, expCol));
+    }
+
+    [Test]
+    [Arguments(64)]
+    [Arguments(-1)]
+    [Arguments(6500)]
+    public async Task IndexThrowsErrors(int index) {
+        await Assert.That(() => ChessHelpers.IndexToRowCol(index)).Throws<InvalidDataException>();
     }
 
     [Test]
