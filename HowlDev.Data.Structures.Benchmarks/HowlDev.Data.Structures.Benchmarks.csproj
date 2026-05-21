@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.15.8" />
+    <ProjectReference Include="..\HowlDev.Data.Structures\HowlDev.Data.Structures.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HowlDev.Data.Structures\HowlDev.Data.Structures.csproj" />
+    <PackageReference Include="HowlDev.Quality.Benchmarking" Version="0.1.0" />
   </ItemGroup>
 
 </Project>
