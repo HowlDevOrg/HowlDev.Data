@@ -15,3 +15,9 @@ I've been testing a whole bunch of data structures (way too early; I need to act
 I'm trying way too hard to write things that are fast before they work. Like, I'm already reading about SIMD instructions to possibly calculate feasible moves faster, even though all I can do is get the value at a square. 
 
 I need to stop and just make it work first. 
+
+---
+
+I've moved back to just a simple byte array and a Class type. It might be faster to modify three cells every update for a full game instead of making a new chessboard on each load (which should theoretically cut down copyover costs, assuming I know how/when that works). Now I can build the game, and *then* optimize it. 
+
+I also just found out about `Math.DivRem(index, num)` which gets both values of the division operator. Because, as we learned about in architecture, we're calculating both, but just getting the value we need out of it. Turns out that's quite useful for my use case. 
