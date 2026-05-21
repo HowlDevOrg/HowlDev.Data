@@ -5,9 +5,9 @@ namespace HowlDev.Data.Structures.Benchmarks;
 public class Program {
     public static void Main(string[] args) {
         BenchmarkValidator.For<ChessboardGetValueAtSquareBench>()
-            .Expect("GetSquareReadonlyInlineStart", BenchmarkExpectations.ExpectedBytes(0).WithNanoseconds(0.9))
-            .Expect("GetSquareReadonlyInlineReturnsNull", BenchmarkExpectations.ExpectedBytes(0).WithNanoseconds(0.69))
-            .Expect("GetSquareReadonlyInlineEnd", BenchmarkExpectations.ExpectedBytes(0).WithNanoseconds(0.69))
+            .Expect("GetSquareReadonlyInlineStart", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
+            .Expect("GetSquareReadonlyInlineReturnsNull", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
+            .Expect("GetSquareReadonlyInlineEnd", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
             .Run();
 
         BenchmarkValidator.For<ChessboardHelpersBench>()

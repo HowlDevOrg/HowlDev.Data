@@ -6,7 +6,10 @@ namespace HowlDev.Data.Structures.Benchmarks;
 [MemoryDiagnoser]
 [ShortRunJob]
 public class ChessboardGetValueAtSquareBench {
-    private Chessboard board = new Chessboard();
+    private Chessboard board;
+    public ChessboardGetValueAtSquareBench() {
+        board = new Chessboard();
+    }
 
     [Benchmark]
     public (ChessPiece Piece, bool Color)? GetSquareReadonlyInlineStart() => board.CheckSquare(0);
