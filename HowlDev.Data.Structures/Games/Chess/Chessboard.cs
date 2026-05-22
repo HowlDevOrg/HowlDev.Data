@@ -138,7 +138,7 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     private int[] ValidateChecks((int, int)[] checks, int row, int col, bool white) {
-        List<int> outputs = [];
+        List<int> outputs = new(8);
         foreach ((int, int) check in checks) {
             (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
             if (!IsValidRowCol(newRow, newCol)) continue;
