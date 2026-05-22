@@ -141,7 +141,6 @@ public class Chessboard : IEquatable<Chessboard> {
             (-2, -1),  (-1, -2),
             ];
         return ValidateChecks(checks, row, col, white);
-
     }
 
     private int[] ValidateChecks((int, int)[] checks, int row, int col, bool white) {
