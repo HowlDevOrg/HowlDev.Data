@@ -62,7 +62,7 @@ public class Chessboard : IEquatable<Chessboard> {
         bool offset = false;
         int index = 0;
         foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
-            byte newPiece = item is null ? (byte)0x00 : GetByte(item.Value.Piece, item.Value.White);
+            byte newPiece = item.HasValue ? GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
             if (offset) {
                 currentPiece = (byte)(currentPiece << 4);
                 currentPiece |= newPiece;
@@ -114,7 +114,7 @@ public class Chessboard : IEquatable<Chessboard> {
     private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
         for (int i = 0; i < 64; i++) {
             (ChessPiece Piece, bool White)? option = CheckSquare(i);
-            if (option is not null && option.Value.White == white) {
+            if (option.HasValue && option.Value.White == white) {
                 yield return (option.Value.Piece, i);
             }
         }
