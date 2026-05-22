@@ -121,27 +121,16 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     private static byte[] DefaultBoard() {
-        byte[] data = new byte[32];
-        data[0] = 0xdc;
-        data[1] = 0xba;
-        data[2] = 0x9b;
-        data[3] = 0xcd;
-        data[4] = 0xee;
-        data[5] = 0xee;
-        data[6] = 0xee;
-        data[7] = 0xee;
-        for (int i = 8; i < 24; i++) {
-            data[i] = 0x00;
-        }
-
-        data[24] = 0x66;
-        data[25] = 0x66;
-        data[26] = 0x66;
-        data[27] = 0x66;
-        data[28] = 0x54;
-        data[29] = 0x32;
-        data[30] = 0x13;
-        data[31] = 0x45;
+        byte[] data = [
+            0xdc, 0xba, 0x9b, 0xcd, 
+            0xee, 0xee, 0xee, 0xee, 
+            0x00, 0x00, 0x00, 0x00, 
+            0x00, 0x00, 0x00, 0x00, 
+            0x00, 0x00, 0x00, 0x00, 
+            0x00, 0x00, 0x00, 0x00, 
+            0x66, 0x66, 0x66, 0x66, 
+            0x54, 0x32, 0x13, 0x45
+        ];
         return data;
     }
 
