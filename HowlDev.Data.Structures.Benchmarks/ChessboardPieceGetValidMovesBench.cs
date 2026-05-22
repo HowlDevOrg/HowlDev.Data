@@ -6,7 +6,9 @@ namespace HowlDev.Data.Structures.Benchmarks;
 [MemoryDiagnoser]
 [ShortRunJob]
 public class ChessboardPieceGetValidMovesBench {
-    private Chessboard board = Chessboard.ReadFEN("8/8/4P3/4K3/3p4/8/8/8");
+    private Chessboard board = Chessboard.ReadFEN("8/8/4P3/4K3/3p4/2N5/8/8");
     [Benchmark]
-    public List<int> GetKingMoves() => [.. board.GetValidMoves(36, true)];
+    public int[] GetKingMoves() => board.GetValidMoves(36, true);
+    [Benchmark]
+    public int[] GetKnightMoves() => board.GetValidMoves(18, true);
 }

@@ -21,7 +21,6 @@ namespace HowlDev.Data.Structures.Games.Chess;
 
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
-    private bool whiteTurn = true;
     private HashSet<(ChessPiece Piece, int index)> whitePieces = [];
     private HashSet<(ChessPiece Piece, int index)> blackPieces = [];
 
@@ -53,28 +52,16 @@ public class Chessboard : IEquatable<Chessboard> {
 
     /// <summary>
     /// Lazily returns the moves for a given index. If the piece is an empty square, 
-    /// simply returns an empty enum. 
+    /// simply returns an empty array. 
     /// </summary>
-    public IEnumerable<int> GetValidMoves(int index, bool white) {
+    public int[] GetValidMoves(int index, bool white) {
         (ChessPiece Piece, bool White)? piece = CheckSquare(index);
-        if (piece is null) yield break;
+        if (piece is null) return [];
 
         (int row, int col) = ChessHelpers.IndexToRowCol(index);
         switch (piece.Value.Piece) {
             case ChessPiece.King:
-                foreach ((int index, byte piece) item in GetKingSpaces(row, col)) {
-                    if (item.piece == 0) {
-                        yield return item.index; // Empty square
-                        continue;
-                    }
-
-                    bool pieceColor = (item.piece & 8) != 0;
-                    if (pieceColor != white) {
-                        yield return item.index;
-                    }
-                }
-
-                break;
+                return GetKingSpaces(row, col, white);
             case ChessPiece.Queen:
                 break;
             case ChessPiece.Rook:
@@ -82,14 +69,16 @@ public class Chessboard : IEquatable<Chessboard> {
             case ChessPiece.Bishop:
                 break;
             case ChessPiece.Knight:
-                break;
+                return GetKnightSpaces(row, col, white);
             case ChessPiece.Pawn:
                 break;
         }
+
+        return [];
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public IEnumerable<int> GetValidMoves(int row, int col, bool white) {
+    public int[] GetValidMoves(int row, int col, bool white) {
         return GetValidMoves(ChessHelpers.RowColToIndex(row, col), white);
     }
 
@@ -121,6 +110,11 @@ public class Chessboard : IEquatable<Chessboard> {
         blackPieces = [.. CalculateChessLists(false)];
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static bool IsValidRowCol(int newRow, int newCol) {
+        return newRow > 0 && newRow < 9 && newCol > 0 && newCol < 9;
+    }
+
     private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
         for (int i = 0; i < 64; i++) {
             (ChessPiece Piece, bool White)? option = CheckSquare(i);
@@ -130,18 +124,55 @@ public class Chessboard : IEquatable<Chessboard> {
         }
     }
 
-    private IEnumerable<(int, byte)> GetKingSpaces(int row, int col) {
+    private int[] GetKingSpaces(int row, int col, bool white) {
         (int, int)[] checks = [
             (1, -1),  (1, 0),  (1, 1),
             (0, -1),           (0, 1),
             (-1, -1), (-1, 0), (-1, 1),
             ];
+        List<int> outputs = [];
         foreach ((int, int) check in checks) {
             (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
-            if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) continue;
+            if (!IsValidRowCol(newRow, newCol)) continue;
             int index = ChessHelpers.RowColToIndex(newRow, newCol);
-            yield return (index, GetByteAtIndex(index));
+            byte piece = GetByteAtIndex(index);
+            if (piece == 0) {
+                outputs.Add(index);
+            } else {
+                bool pieceColor = (piece & 8) != 0;
+                if (pieceColor != white) {
+                    outputs.Add(index);
+                }
+            }
         }
+
+        return [.. outputs];
+    }
+
+    private int[] GetKnightSpaces(int row, int col, bool white) {
+        (int, int)[] checks = [
+            (2, 1),  (1, 2),
+            (-2, 1),  (-1, 2),
+            (2, -1),  (1, -2),
+            (-2, -1),  (-1, -2),
+            ];
+        List<int> outputs = [];
+        foreach ((int, int) check in checks) {
+            (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
+            if (!IsValidRowCol(newRow, newCol)) continue;
+            int index = ChessHelpers.RowColToIndex(newRow, newCol);
+            byte piece = GetByteAtIndex(index);
+            if (piece == 0) {
+                outputs.Add(index);
+            } else {
+                bool pieceColor = (piece & 8) != 0;
+                if (pieceColor != white) {
+                    outputs.Add(index);
+                }
+            }
+        }
+
+        return outputs.ToArray();
     }
 
     private byte GetByteAtIndex(int index) {

@@ -5,7 +5,8 @@ public class Tests {
     [Test]
     public async Task CanCreateDependency() {
         _ = new DependencyChecking<int>([]);
-        await Assert.That(true).IsEqualTo(true);
+        bool val = true;
+        await Assert.That(val).IsEqualTo(true);
     }
 
     [Test]
