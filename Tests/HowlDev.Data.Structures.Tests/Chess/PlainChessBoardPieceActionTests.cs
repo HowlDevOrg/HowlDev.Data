@@ -52,7 +52,7 @@ public class PlainChessBoardKnightTests {
 
     [Test]
     public async Task KnightMoves2() {
-        Chessboard c = Chessboard.ReadFEN("8/8/2p5/4N3/8/5P2/8/8");
+        Chessboard c = Chessboard.ReadFEN("8/8/2p5/4N3/4P3/5P2/8/8");
         await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
         await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Knight);
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);

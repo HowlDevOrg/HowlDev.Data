@@ -2,23 +2,6 @@ using System.Runtime.CompilerServices;
 
 namespace HowlDev.Data.Structures.Games.Chess;
 
-// CHESS KEY: 
-// Positioning is white along the top.
-// 0 = Empty Cell
-// 8 = Out of Bounds
-// 1 = White King
-// 2 = White Queen
-// 3 = White Bishop
-// 4 = White Knight
-// 5 = White Rook
-// 6 = White Pawn
-// 9 = Black King
-// a/10 = Black Queen
-// b/11 = Black Bishop
-// c/12 = Black Knight
-// d/13 = Black Rook
-// e/14 = Black Pawn
-
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
     private HashSet<(ChessPiece Piece, int index)> whitePieces = [];
@@ -35,7 +18,7 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     public (ChessPiece Piece, bool White)? CheckSquare(int index) {
-        return GetPiece(GetByteAtIndex(index));
+        return ChessPieceConversion.GetPiece(GetByteAtIndex(index));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -50,10 +33,6 @@ public class Chessboard : IEquatable<Chessboard> {
         return white ? whitePieces : blackPieces;
     }
 
-    /// <summary>
-    /// Lazily returns the moves for a given index. If the piece is an empty square, 
-    /// simply returns an empty array. 
-    /// </summary>
     public int[] GetValidMoves(int index, bool white) {
         (ChessPiece Piece, bool White)? piece = CheckSquare(index);
         if (piece is null) return [];
@@ -88,7 +67,7 @@ public class Chessboard : IEquatable<Chessboard> {
         bool offset = false;
         int index = 0;
         foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
-            byte newPiece = item.HasValue ? GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
+            byte newPiece = item.HasValue ? ChessPieceConversion.GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
             if (offset) {
                 currentPiece = (byte)(currentPiece << 4);
                 currentPiece |= newPiece;
@@ -171,33 +150,6 @@ public class Chessboard : IEquatable<Chessboard> {
         } else {
             return ByteAdjustment.RightHalf(board[quot]);
         }
-    }
-
-    private static (ChessPiece Piece, bool White)? GetPiece(byte piece) {
-        int checks = piece & 0x07;
-        bool color = (piece & 0x08) != 0;
-        return checks switch {
-            1 => (ChessPiece.King, color),
-            2 => (ChessPiece.Queen, color),
-            3 => (ChessPiece.Bishop, color),
-            4 => (ChessPiece.Knight, color),
-            5 => (ChessPiece.Rook, color),
-            6 => (ChessPiece.Pawn, color),
-            _ => null
-        };
-    }
-
-    private static byte GetByte(ChessPiece piece, bool white) {
-        byte newPiece = piece switch {
-            ChessPiece.King => 1,
-            ChessPiece.Queen => 2,
-            ChessPiece.Bishop => 3,
-            ChessPiece.Knight => 4,
-            ChessPiece.Rook => 5,
-            ChessPiece.Pawn => 6,
-            _ => throw new Exception("Unknown piece.")
-        };
-        return white ? (byte)(newPiece | 0x08) : newPiece;
     }
 
     private static byte[] DefaultBoard() =>
