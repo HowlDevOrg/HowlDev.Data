@@ -56,13 +56,13 @@ public class Chessboard : IEquatable<Chessboard> {
         return [];
     }
 
+    public static Chessboard ReadFEN(string fen) {
+        return new Chessboard(ChessHelpers.GetBoardFromFEN(fen));
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public int[] GetValidMoves(int row, int col) {
         return GetValidMoves(ChessHelpers.RowColToIndex(row, col));
-    }
-
-    public static Chessboard ReadFEN(string fen) {
-        return new Chessboard(ChessHelpers.GetBoardFromFEN(fen));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
