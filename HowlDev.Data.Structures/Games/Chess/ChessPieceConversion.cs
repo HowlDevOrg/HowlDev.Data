@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace HowlDev.Data.Structures.Games.Chess; 
 
 // CHESS KEY: 
@@ -33,7 +35,7 @@ public static class ChessPieceConversion {
 
     public static char? GetPieceRepresentation(byte piece) {
         int checks = piece & 0x07;
-        bool color = (piece & 0x08) != 0;
+        bool color = PieceColor(piece);
         return checks switch {
             1 => color ? 'K' : 'k', 
             2 => color ? 'Q' : 'q', 
@@ -56,5 +58,10 @@ public static class ChessPieceConversion {
             _ => throw new Exception("Unknown piece.")
         };
         return white ? (byte)(newPiece | 0x08) : newPiece;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool PieceColor(byte piece) {
+        return (piece & 0x08) != 0;
     }
 }
