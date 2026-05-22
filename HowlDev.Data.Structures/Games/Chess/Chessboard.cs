@@ -130,6 +130,21 @@ public class Chessboard : IEquatable<Chessboard> {
             (0, -1),           (0, 1),
             (-1, -1), (-1, 0), (-1, 1),
             ];
+        return ValidateChecks(checks, row, col, white);
+    }
+
+    private int[] GetKnightSpaces(int row, int col, bool white) {
+        (int, int)[] checks = [
+            (2, 1),  (1, 2),
+            (-2, 1),  (-1, 2),
+            (2, -1),  (1, -2),
+            (-2, -1),  (-1, -2),
+            ];
+        return ValidateChecks(checks, row, col, white);
+
+    }
+
+    private int[] ValidateChecks((int, int)[] checks, int row, int col, bool white) {
         List<int> outputs = [];
         foreach ((int, int) check in checks) {
             (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
@@ -147,32 +162,6 @@ public class Chessboard : IEquatable<Chessboard> {
         }
 
         return [.. outputs];
-    }
-
-    private int[] GetKnightSpaces(int row, int col, bool white) {
-        (int, int)[] checks = [
-            (2, 1),  (1, 2),
-            (-2, 1),  (-1, 2),
-            (2, -1),  (1, -2),
-            (-2, -1),  (-1, -2),
-            ];
-        List<int> outputs = [];
-        foreach ((int, int) check in checks) {
-            (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
-            if (!IsValidRowCol(newRow, newCol)) continue;
-            int index = ChessHelpers.RowColToIndex(newRow, newCol);
-            byte piece = GetByteAtIndex(index);
-            if (piece == 0) {
-                outputs.Add(index);
-            } else {
-                bool pieceColor = (piece & 8) != 0;
-                if (pieceColor != white) {
-                    outputs.Add(index);
-                }
-            }
-        }
-
-        return outputs.ToArray();
     }
 
     private byte GetByteAtIndex(int index) {
