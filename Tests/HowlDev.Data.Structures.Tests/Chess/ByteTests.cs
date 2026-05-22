@@ -11,7 +11,7 @@ public class ByteTests {
     public async Task CanGetRightHalf(byte input, byte exp) {
         await Assert.That(ByteAdjustment.RightHalf(input)).IsEqualTo(exp);
     }
-    
+
     [Test]
     [Arguments(0xff, 0x0f)]
     [Arguments(0xfa, 0x0f)]

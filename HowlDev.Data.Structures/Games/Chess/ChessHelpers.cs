@@ -57,7 +57,7 @@ public static class ChessHelpers {
             'B' => (ChessPiece.Bishop, true),
             'N' => (ChessPiece.Knight, true),
             'R' => (ChessPiece.Rook, true),
-            'P' => (ChessPiece.Pawn, true), 
+            'P' => (ChessPiece.Pawn, true),
             'k' => (ChessPiece.King, false),
             'q' => (ChessPiece.Queen, false),
             'b' => (ChessPiece.Bishop, false),

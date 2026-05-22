@@ -6,7 +6,7 @@ public static class ByteAdjustment {
     public static byte RightHalf(byte value) {
         return (byte)(value & 0x0f);
     }
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte LeftHalf(byte value) {
         return (byte)(value >> 4);
