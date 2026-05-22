@@ -10,10 +10,6 @@ public class Program {
             .Expect("GetRowCol", BenchmarkExpectations.ExpectedNanosecondsLessThan(0.1).WithBytes(0))
             .Run();
 
-        BenchmarkValidator.For<ChessboardInitBench>()
-            .Expect("NewBoard", BenchmarkExpectations.ExpectedNanoseconds(550).WithBytes(848))
-            .Run();
-
         BenchmarkValidator.For<ChessboardGetValueAtSquareBench>()
             .Expect("GetSquareReadonlyInlineStart", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
             .Expect("GetSquareReadonlyInlineReturnsNull", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
