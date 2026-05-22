@@ -40,6 +40,28 @@ public class PlainChessBoardTests {
         Chessboard c = new Chessboard();
         await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(16);
         await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(16);
-        
+    }
+
+    [Test]
+    [Arguments("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 16, 16)]
+    [Arguments("rnbqkbnr/pppppppp/8/8/8/7P/PPPPPPPP/RNBQKBNR", 17, 16)]
+    public async Task BoardCanBeBuiltWithFEN(string fen, int expWhite, int expBlack) {
+        Chessboard c = Chessboard.ReadFEN(fen);
+        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(expWhite);
+        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(expBlack);
+    }
+
+    [Test]
+    public async Task BoardBuiltWithFENIsEquivalent() {
+        Chessboard c = new Chessboard();
+        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        await Assert.That(c.Equals(c2)).IsTrue();
+    }
+
+    [Test]
+    public async Task BoardBuiltWithDifferentFENIsNotEquivalent() {
+        Chessboard c = new Chessboard();
+        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR");
+        await Assert.That(c.Equals(c2)).IsFalse();
     }
 }

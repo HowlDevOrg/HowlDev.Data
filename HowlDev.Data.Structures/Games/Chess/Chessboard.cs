@@ -21,13 +21,17 @@ namespace HowlDev.Data.Structures.Games.Chess;
 
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
-    private List<(ChessPiece Piece, int index)> whitePieces;
-    private List<(ChessPiece Piece, int index)> blackPieces;
+    private List<(ChessPiece Piece, int index)> whitePieces = [];
+    private List<(ChessPiece Piece, int index)> blackPieces = [];
 
     public Chessboard() {
         board = DefaultBoard();
-        whitePieces = [.. CalculateChessLists(true)];
-        blackPieces = [.. CalculateChessLists(false)];
+        RecalculateChessLists();
+    }
+
+    private Chessboard(byte[] newBoard) {
+        board = newBoard;
+        RecalculateChessLists();
     }
 
     public (ChessPiece Piece, bool White)? CheckSquare(int index) {
@@ -52,6 +56,28 @@ public class Chessboard : IEquatable<Chessboard> {
         return white ? whitePieces : blackPieces;
     }
 
+    public static Chessboard ReadFEN(string fen) {
+        byte[] newBoard = new byte[32];
+        byte currentPiece = 0x00;
+        bool offset = false;
+        int index = 0;
+        foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
+            byte newPiece = item is null ? (byte)0x00 : GetByte(item.Value.Piece, item.Value.White);
+            if (offset) {
+                currentPiece = (byte)(currentPiece << 4);
+                currentPiece |= newPiece;
+                newBoard[index] = currentPiece;
+                index++;
+                offset = false;
+            } else {
+                currentPiece = newPiece;
+                offset = true;
+            }
+        }
+
+        return new Chessboard(newBoard);
+    }
+
     private static (ChessPiece Piece, bool White)? GetPiece(byte piece) {
         int checks = piece & 0x07;
         bool color = (piece & 0x08) != 0;
@@ -64,6 +90,25 @@ public class Chessboard : IEquatable<Chessboard> {
             6 => (ChessPiece.Pawn, color),
             _ => null
         };
+    }
+
+    private static byte GetByte(ChessPiece piece, bool white) {
+        byte newPiece = piece switch {
+            ChessPiece.King => 1,
+            ChessPiece.Queen => 2,
+            ChessPiece.Bishop => 3,
+            ChessPiece.Knight => 4,
+            ChessPiece.Rook => 5,
+            ChessPiece.Pawn => 6,
+            _ => throw new Exception("Unknown piece.")
+        };
+        return white ? (byte)(newPiece | 0x08) : newPiece;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void RecalculateChessLists() {
+        whitePieces = [.. CalculateChessLists(true)];
+        blackPieces = [.. CalculateChessLists(false)];
     }
 
     private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
