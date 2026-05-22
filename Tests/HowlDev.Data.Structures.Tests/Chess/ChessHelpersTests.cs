@@ -79,3 +79,17 @@ public class ChessHelpersCharIndexTests {
         }
     }
 }
+public class ChessHelpersFENParsingTests {
+    [Test]
+    public async Task DefaultBoardFEN() {
+        List<(ChessPiece Piece, bool White)?> list = [.. ChessHelpers.ParseFENNotation("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR")];
+        await Assert.That(list.Count).IsEqualTo(64);
+        await Assert.That(list[0]!.Value.Piece).IsEqualTo(ChessPiece.Rook);
+        await Assert.That(list[0]!.Value.White).IsEqualTo(true);
+        await Assert.That(list[7]!.Value.Piece).IsEqualTo(ChessPiece.Rook);
+        await Assert.That(list[8]!.Value.Piece).IsEqualTo(ChessPiece.Pawn);
+        await Assert.That(list[24]!).IsNull();
+        await Assert.That(list[63]!.Value.Piece).IsEqualTo(ChessPiece.Rook);
+        await Assert.That(list[63]!.Value.White).IsEqualTo(false);
+    }
+}

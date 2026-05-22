@@ -32,6 +32,42 @@ public static class ChessHelpers {
         return (quot + 1, rem + 1);
     }
 
+    // Not optimized/benchmarked in any way, just returns an enumerable. 
+    public static IEnumerable<(ChessPiece Piece, bool White)?> ParseFENNotation(string notation) {
+        string[] rows = [.. notation.Split('/').Reverse()]; // Reversed for the way they come in.
+        if (rows.Length != 8) throw new InvalidDataException("FEN should split into 8 strings via '/'");
+
+        for (int i = 0; i < 8; i++) {
+            foreach (char item in rows[i]) {
+                if (int.TryParse(item.ToString(), out int result)) {
+                    for (int k = 0; k < result; k++) {
+                        yield return null;
+                    }
+                } else {
+                    yield return CharToPiece(item);
+                }
+            }
+        }
+    }
+
+    private static (ChessPiece Piece, bool White) CharToPiece(char piece) {
+        return piece switch {
+            'K' => (ChessPiece.King, true),
+            'Q' => (ChessPiece.Queen, true),
+            'B' => (ChessPiece.Bishop, true),
+            'N' => (ChessPiece.Knight, true),
+            'R' => (ChessPiece.Rook, true),
+            'P' => (ChessPiece.Pawn, true), 
+            'k' => (ChessPiece.King, false),
+            'q' => (ChessPiece.Queen, false),
+            'b' => (ChessPiece.Bishop, false),
+            'n' => (ChessPiece.Knight, false),
+            'r' => (ChessPiece.Rook, false),
+            'p' => (ChessPiece.Pawn, false),
+            _ => throw new InvalidDataException($"Can't read piece type {piece}.")
+        };
+    }
+
     [MethodImpl(MethodImplOptions.NoInlining)]
     private static void ThrowRowException() => throw new InvalidDataException($"Row must be between 1 and 8 inclusive.");
     [MethodImpl(MethodImplOptions.NoInlining)]
