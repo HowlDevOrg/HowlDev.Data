@@ -16,13 +16,13 @@ public class PlainChessBoardTests {
     }
 
     [Test]
-    public async Task BoardCanBeBuiltWithFENCorrectly1() {
+    public async Task DefaultBoardCanBeBuiltWithFENCorrectly() {
         Chessboard c = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
         await ValidateDefaultBoard(c);
     }
 
     [Test]
-    public async Task BoardCanBeBuiltWithFENCorrectly2() {
+    public async Task BoardCanBeBuiltWithFENCorrectly() {
         Chessboard c = Chessboard.ReadFEN("8/8/8/4p1K1/2k1P3/8/8/8");
         for (int i = 0; i < 64; i++) {
             if (i == 26) {
@@ -97,5 +97,17 @@ public class PlainChessBoardFENTests {
         Chessboard c = new Chessboard();
         Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR");
         await Assert.That(c.Equals(c2)).IsFalse();
+    }
+
+    [Test]
+    public async Task FENThrowsErrorsCorrectly1() {
+        await Assert.That(() => Chessboard.ReadFEN("8/8/8/4p1K1/2k1P3/8/8/8/8"))
+            .Throws<InvalidDataException>();
+    }
+
+    [Test]
+    public async Task FENThrowsErrorsCorrectly2() {
+        await Assert.That(() => Chessboard.ReadFEN("8/8/8/4p1K1/2k1P3/8/8/58"))
+            .Throws<IndexOutOfRangeException>();
     }
 }
