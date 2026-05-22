@@ -5,6 +5,68 @@ public class PlainChessBoardTests {
     [Test]
     public async Task DefaultBoardCheck() {
         Chessboard c = new Chessboard();
+        await ValidateDefaultBoard(c);
+    }
+
+    [Test]
+    public async Task BoardCorrectlyCalculatesColorLists() {
+        Chessboard c = new Chessboard();
+        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(16);
+        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(16);
+    }
+
+    [Test]
+    public async Task BoardCanBeBuiltWithFENCorrectly1() {
+        Chessboard c = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        await ValidateDefaultBoard(c);
+    }
+
+    [Test]
+    public async Task BoardCanBeBuiltWithFENCorrectly2() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4p1K1/2k1P3/8/8/8");
+        for (int i = 0; i < 64; i++) {
+            if (i == 26) {
+                await Assert.That(c.CheckSquare(i)!.Value.Piece).IsEqualTo(ChessPiece.King);
+                await Assert.That(c.CheckSquare(i)!.Value.White).IsEqualTo(false);
+            } else if (i == 28) {
+                await Assert.That(c.CheckSquare(i)!.Value.Piece).IsEqualTo(ChessPiece.Pawn);
+                await Assert.That(c.CheckSquare(i)!.Value.White).IsEqualTo(true);
+            } else if (i == 36) {
+                await Assert.That(c.CheckSquare(i)!.Value.Piece).IsEqualTo(ChessPiece.Pawn);
+                await Assert.That(c.CheckSquare(i)!.Value.White).IsEqualTo(false);
+            } else if (i == 38) {
+                await Assert.That(c.CheckSquare(i)!.Value.Piece).IsEqualTo(ChessPiece.King);
+                await Assert.That(c.CheckSquare(i)!.Value.White).IsEqualTo(true);
+            } else {
+                await Assert.That(c.CheckSquare(i)).IsNull();
+            }
+        }
+    }
+
+    [Test]
+    [Arguments("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 16, 16)]
+    [Arguments("rnbqkbnr/pppppppp/8/8/8/7P/PPPPPPPP/RNBQKBNR", 17, 16)]
+    public async Task BoardCanBeBuiltWithFEN(string fen, int expWhite, int expBlack) {
+        Chessboard c = Chessboard.ReadFEN(fen);
+        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(expWhite);
+        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(expBlack);
+    }
+
+    [Test]
+    public async Task BoardBuiltWithFENIsEquivalent() {
+        Chessboard c = new Chessboard();
+        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        await Assert.That(c.Equals(c2)).IsTrue();
+    }
+
+    [Test]
+    public async Task BoardBuiltWithDifferentFENIsNotEquivalent() {
+        Chessboard c = new Chessboard();
+        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR");
+        await Assert.That(c.Equals(c2)).IsFalse();
+    }
+
+    private async Task ValidateDefaultBoard(Chessboard c) {
         await Assert.That(c.CheckSquare(0)).IsEqualTo((ChessPiece.Rook, true));
         await Assert.That(c.CheckSquare(1)).IsEqualTo((ChessPiece.Knight, true));
         await Assert.That(c.CheckSquare(2)).IsEqualTo((ChessPiece.Bishop, true));
@@ -33,35 +95,5 @@ public class PlainChessBoardTests {
         await Assert.That(c.CheckSquare(61)).IsEqualTo((ChessPiece.Bishop, false));
         await Assert.That(c.CheckSquare(62)).IsEqualTo((ChessPiece.Knight, false));
         await Assert.That(c.CheckSquare(63)).IsEqualTo((ChessPiece.Rook, false));
-    }
-
-    [Test]
-    public async Task BoardCorrectlyCalculatesColorLists() {
-        Chessboard c = new Chessboard();
-        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(16);
-        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(16);
-    }
-
-    [Test]
-    [Arguments("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 16, 16)]
-    [Arguments("rnbqkbnr/pppppppp/8/8/8/7P/PPPPPPPP/RNBQKBNR", 17, 16)]
-    public async Task BoardCanBeBuiltWithFEN(string fen, int expWhite, int expBlack) {
-        Chessboard c = Chessboard.ReadFEN(fen);
-        await Assert.That(c.GetChessPieces(true).Count()).IsEqualTo(expWhite);
-        await Assert.That(c.GetChessPieces(false).Count()).IsEqualTo(expBlack);
-    }
-
-    [Test]
-    public async Task BoardBuiltWithFENIsEquivalent() {
-        Chessboard c = new Chessboard();
-        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
-        await Assert.That(c.Equals(c2)).IsTrue();
-    }
-
-    [Test]
-    public async Task BoardBuiltWithDifferentFENIsNotEquivalent() {
-        Chessboard c = new Chessboard();
-        Chessboard c2 = Chessboard.ReadFEN("rnbqkbnr/pppppppp/8/8/8/7p/PPPPPPPP/RNBQKBNR");
-        await Assert.That(c.Equals(c2)).IsFalse();
     }
 }
