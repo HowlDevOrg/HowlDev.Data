@@ -33,14 +33,14 @@ public class Chessboard : IEquatable<Chessboard> {
         return white ? whitePieces : blackPieces;
     }
 
-    public int[] GetValidMoves(int index, bool white) {
+    public int[] GetValidMoves(int index) {
         (ChessPiece Piece, bool White)? piece = CheckSquare(index);
         if (piece is null) return [];
 
         (int row, int col) = ChessHelpers.IndexToRowCol(index);
         switch (piece.Value.Piece) {
             case ChessPiece.King:
-                return GetKingSpaces(row, col, white);
+                return GetKingSpaces(row, col, piece.Value.White);
             case ChessPiece.Queen:
                 break;
             case ChessPiece.Rook:
@@ -48,7 +48,7 @@ public class Chessboard : IEquatable<Chessboard> {
             case ChessPiece.Bishop:
                 break;
             case ChessPiece.Knight:
-                return GetKnightSpaces(row, col, white);
+                return GetKnightSpaces(row, col, piece.Value.White);
             case ChessPiece.Pawn:
                 break;
         }
@@ -57,30 +57,12 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int[] GetValidMoves(int row, int col, bool white) {
-        return GetValidMoves(ChessHelpers.RowColToIndex(row, col), white);
+    public int[] GetValidMoves(int row, int col) {
+        return GetValidMoves(ChessHelpers.RowColToIndex(row, col));
     }
 
     public static Chessboard ReadFEN(string fen) {
-        byte[] newBoard = new byte[32];
-        byte currentPiece = 0x00;
-        bool offset = false;
-        int index = 0;
-        foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
-            byte newPiece = item.HasValue ? ChessPieceConversion.GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
-            if (offset) {
-                currentPiece = (byte)(currentPiece << 4);
-                currentPiece |= newPiece;
-                newBoard[index] = currentPiece;
-                index++;
-                offset = false;
-            } else {
-                currentPiece = newPiece;
-                offset = true;
-            }
-        }
-
-        return new Chessboard(newBoard);
+        return new Chessboard(ChessHelpers.GetBoardFromFEN(fen));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

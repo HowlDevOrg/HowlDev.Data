@@ -50,6 +50,28 @@ public static class ChessHelpers {
         }
     }
 
+    public static byte[] GetBoardFromFEN(string fen) {
+        byte[] newBoard = new byte[32];
+        byte currentPiece = 0x00;
+        bool offset = false;
+        int index = 0;
+        foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
+            byte newPiece = item.HasValue ? ChessPieceConversion.GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
+            if (offset) {
+                currentPiece = (byte)(currentPiece << 4);
+                currentPiece |= newPiece;
+                newBoard[index] = currentPiece;
+                index++;
+                offset = false;
+            } else {
+                currentPiece = newPiece;
+                offset = true;
+            }
+        }
+        
+        return newBoard;
+    }
+
     private static (ChessPiece Piece, bool White) CharToPiece(char piece) {
         return piece switch {
             'K' => (ChessPiece.King, true),
