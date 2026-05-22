@@ -131,7 +131,7 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     private IEnumerable<(int, byte)> GetKingSpaces(int row, int col) {
-        List<(int, int)> checks = [
+        (int, int)[] checks = [
             (1, -1),  (1, 0),  (1, 1),
             (0, -1),           (0, 1),
             (-1, -1), (-1, 0), (-1, 1),
