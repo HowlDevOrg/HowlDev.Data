@@ -17,7 +17,7 @@ public static class ChessHelpers {
         return RowColToIndex(row, column);
     }
 
-    // [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int RowColToIndex(int row, int col) {
         if (row < 1 || row > 8) ThrowRowException();
         if (col < 1 || col > 8) ThrowColException();
@@ -25,7 +25,7 @@ public static class ChessHelpers {
         return (row - 1) * 8 + col - 1;
     }
 
-    // [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static (int row, int col) IndexToRowCol(int index) {
         if (index < 0 || index > 63) ThrowIndexException();
         (int quot, int rem) = Math.DivRem(index, 8);

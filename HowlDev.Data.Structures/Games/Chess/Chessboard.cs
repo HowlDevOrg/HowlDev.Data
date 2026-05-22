@@ -13,16 +13,17 @@ namespace HowlDev.Data.Structures.Games.Chess;
 // 5 = White Rook
 // 6 = White Pawn
 // 9 = Black King
-// a = Black Queen
-// b = Black Bishop
-// c = Black Knight
-// d = Black Rook
-// e = Black Pawn
+// a/10 = Black Queen
+// b/11 = Black Bishop
+// c/12 = Black Knight
+// d/13 = Black Rook
+// e/14 = Black Pawn
 
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
-    private List<(ChessPiece Piece, int index)> whitePieces = [];
-    private List<(ChessPiece Piece, int index)> blackPieces = [];
+    private bool whiteTurn = true;
+    private HashSet<(ChessPiece Piece, int index)> whitePieces = [];
+    private HashSet<(ChessPiece Piece, int index)> blackPieces = [];
 
     public Chessboard() {
         board = DefaultBoard();
@@ -35,13 +36,7 @@ public class Chessboard : IEquatable<Chessboard> {
     }
 
     public (ChessPiece Piece, bool White)? CheckSquare(int index) {
-        if (index < 0 || index > 63) ThrowIndexException();
-        (int quot, int rem) = Math.DivRem(index, 2); // Calculates arrayIndex and modulo in one go
-        if (rem == 0) {
-            return GetPiece(ByteAdjustment.LeftHalf(board[quot]));
-        } else {
-            return GetPiece(ByteAdjustment.RightHalf(board[quot]));
-        }
+        return GetPiece(GetByteAtIndex(index));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -54,6 +49,48 @@ public class Chessboard : IEquatable<Chessboard> {
     /// </summary>
     public IEnumerable<(ChessPiece Piece, int index)> GetChessPieces(bool white) {
         return white ? whitePieces : blackPieces;
+    }
+
+    /// <summary>
+    /// Lazily returns the moves for a given index. If the piece is an empty square, 
+    /// simply returns an empty enum. 
+    /// </summary>
+    public IEnumerable<int> GetValidMoves(int index, bool white) {
+        (ChessPiece Piece, bool White)? piece = CheckSquare(index);
+        if (piece is null) yield break;
+
+        (int row, int col) = ChessHelpers.IndexToRowCol(index);
+        switch (piece.Value.Piece) {
+            case ChessPiece.King:
+                foreach ((int index, byte piece) item in GetKingSpaces(row, col)) {
+                    if (item.piece == 0) {
+                        yield return item.index; // Empty square
+                        continue;
+                    }
+
+                    bool pieceColor = (item.piece & 8) != 0;
+                    if (pieceColor != white) {
+                        yield return item.index;
+                    }
+                }
+
+                break;
+            case ChessPiece.Queen:
+                break;
+            case ChessPiece.Rook:
+                break;
+            case ChessPiece.Bishop:
+                break;
+            case ChessPiece.Knight:
+                break;
+            case ChessPiece.Pawn:
+                break;
+        }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public IEnumerable<int> GetValidMoves(int row, int col, bool white) {
+        return GetValidMoves(ChessHelpers.RowColToIndex(row, col), white);
     }
 
     public static Chessboard ReadFEN(string fen) {
@@ -76,6 +113,45 @@ public class Chessboard : IEquatable<Chessboard> {
         }
 
         return new Chessboard(newBoard);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void RecalculateChessLists() {
+        whitePieces = [.. CalculateChessLists(true)];
+        blackPieces = [.. CalculateChessLists(false)];
+    }
+
+    private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
+        for (int i = 0; i < 64; i++) {
+            (ChessPiece Piece, bool White)? option = CheckSquare(i);
+            if (option.HasValue && option.Value.White == white) {
+                yield return (option.Value.Piece, i);
+            }
+        }
+    }
+
+    private IEnumerable<(int, byte)> GetKingSpaces(int row, int col) {
+        List<(int, int)> checks = [
+            (1, -1),  (1, 0),  (1, 1),
+            (0, -1),           (0, 1),
+            (-1, -1), (-1, 0), (-1, 1),
+            ];
+        foreach ((int, int) check in checks) {
+            (int newRow, int newCol) = (check.Item1 + row, check.Item2 + col);
+            if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) continue;
+            int index = ChessHelpers.RowColToIndex(newRow, newCol);
+            yield return (index, GetByteAtIndex(index));
+        }
+    }
+
+    private byte GetByteAtIndex(int index) {
+        if (index < 0 || index > 63) ThrowIndexException();
+        (int quot, int rem) = Math.DivRem(index, 2); // Calculates arrayIndex and modulo in one go
+        if (rem == 0) {
+            return ByteAdjustment.LeftHalf(board[quot]);
+        } else {
+            return ByteAdjustment.RightHalf(board[quot]);
+        }
     }
 
     private static (ChessPiece Piece, bool White)? GetPiece(byte piece) {
@@ -105,34 +181,17 @@ public class Chessboard : IEquatable<Chessboard> {
         return white ? (byte)(newPiece | 0x08) : newPiece;
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void RecalculateChessLists() {
-        whitePieces = [.. CalculateChessLists(true)];
-        blackPieces = [.. CalculateChessLists(false)];
-    }
-
-    private IEnumerable<(ChessPiece Piece, int index)> CalculateChessLists(bool white) {
-        for (int i = 0; i < 64; i++) {
-            (ChessPiece Piece, bool White)? option = CheckSquare(i);
-            if (option.HasValue && option.Value.White == white) {
-                yield return (option.Value.Piece, i);
-            }
-        }
-    }
-
-    private static byte[] DefaultBoard() {
-        byte[] data = [
-            0xdc, 0xba, 0x9b, 0xcd, 
-            0xee, 0xee, 0xee, 0xee, 
-            0x00, 0x00, 0x00, 0x00, 
-            0x00, 0x00, 0x00, 0x00, 
-            0x00, 0x00, 0x00, 0x00, 
-            0x00, 0x00, 0x00, 0x00, 
-            0x66, 0x66, 0x66, 0x66, 
+    private static byte[] DefaultBoard() =>
+        [
+            0xdc, 0xba, 0x9b, 0xcd,
+            0xee, 0xee, 0xee, 0xee,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00,
+            0x66, 0x66, 0x66, 0x66,
             0x54, 0x32, 0x13, 0x45
         ];
-        return data;
-    }
 
     public static bool operator !=(Chessboard left, Chessboard right) {
         return !left.Equals(right);
