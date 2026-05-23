@@ -44,7 +44,7 @@ public class Chessboard : IEquatable<Chessboard> {
             case ChessPiece.Queen:
                 break;
             case ChessPiece.Rook:
-                break;
+                return GetRookSpaces(row, col, piece.Value.White);
             case ChessPiece.Bishop:
                 return GetBishopSpaces(row, col, piece.Value.White);
             case ChessPiece.Knight:
@@ -112,13 +112,17 @@ public class Chessboard : IEquatable<Chessboard> {
         ];
     }
 
+    private int[] GetRookSpaces(int row, int col, bool white) {
+        return [
+          ..SearchUntil(row, col,
+          [(-1, 0), (1, 0), (0, -1), (0, 1)],
+          !white)
+        ];
+    }
+
     /// <summary>
-    /// Returns a list of possible moves in the given direction
+    /// Returns a list of possible moves in the given direction(s). 
     /// </summary>
-    /// <param name="rowOffset"></param>
-    /// <param name="colOffset"></param>
-    /// <param name="opposingColor"></param>
-    /// <returns></returns>
     private List<int> SearchUntil(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
         List<int> possibleIndexes = new(7 * offsets.Length);
         foreach ((int rowOffset, int colOffset) in offsets) {

@@ -19,6 +19,7 @@ public class Program {
             .Expect("GetKingMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetKnightMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(38).WithBytes(264))
+            .Expect("GetRookMoves", BenchmarkExpectations.ExpectedNanoseconds(58).WithBytes(304))
             .Run();
     }
 }

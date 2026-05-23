@@ -126,3 +126,40 @@ public class BishopTests {
         await Assert.That(bishopMoves.Count).IsEqualTo(0);
     }
 }
+
+public class RookTests {
+    [Test]
+    public async Task RookMoves1() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4R3/8/8/8/8");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Rook);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
+        int[] rookMoves = c.GetValidMoves(36);
+        int[] expMoves = [28, 20, 12, 4, 37, 38, 39, 35, 34, 33, 32, 44, 52, 60];
+        await Assert.That(rookMoves.Count).IsEqualTo(14);
+        foreach (int item in expMoves) {
+            await Assert.That(rookMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task RookMoves2() {
+        Chessboard c = Chessboard.ReadFEN("8/4p3/5P2/3pR3/3p1P2/8/8/4K3");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Rook);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
+        int[] rookMoves = c.GetValidMoves(36);
+        int[] expMoves = [28, 20, 12, 37, 38, 39, 35, 44, 52];
+        await Assert.That(rookMoves.Count).IsEqualTo(9);
+        foreach (int item in expMoves) {
+            await Assert.That(rookMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task RookMovesDefaultBoard() {
+        Chessboard c = new Chessboard();
+        int[] rookMoves = c.GetValidMoves(0);
+        await Assert.That(rookMoves.Count).IsEqualTo(0);
+    }
+}
