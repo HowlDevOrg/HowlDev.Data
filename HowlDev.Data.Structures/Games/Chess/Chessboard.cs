@@ -123,8 +123,7 @@ public class Chessboard : IEquatable<Chessboard> {
     /// <summary>
     /// Returns a list of possible moves in the given direction(s). 
     /// </summary>
-    private List<int> SearchUntil(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
-        List<int> possibleIndexes = new(7 * offsets.Length);
+    private IEnumerable<int> SearchUntil(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
         foreach ((int rowOffset, int colOffset) in offsets) {
             int newStartRow = startRow;
             int newStartCol = startCol;
@@ -134,16 +133,14 @@ public class Chessboard : IEquatable<Chessboard> {
                 int index = ChessHelpers.RowColToIndex(newRow, newCol);
                 byte piece = GetByteAtIndex(index);
                 if (piece == 0x00) {
-                    possibleIndexes.Add(index);
+                    yield return index;
                 } else {
                     bool white = ChessPieceConversion.PieceColor(piece);
-                    if (white == opposingColor) possibleIndexes.Add(index);
+                    if (white == opposingColor) yield return index;
                     break;
                 }
             }
         }
-
-        return possibleIndexes;
     }
 
     private int[] ValidateChecks((int, int)[] checks, int row, int col, bool white) {

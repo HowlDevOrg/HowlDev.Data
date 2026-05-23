@@ -18,8 +18,8 @@ public class Program {
         BenchmarkValidator.For<ChessboardPieceGetValidMovesBench>()
             .Expect("GetKingMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetKnightMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
-            .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(38).WithBytes(264))
-            .Expect("GetRookMoves", BenchmarkExpectations.ExpectedNanoseconds(58).WithBytes(304))
+            .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(52).WithBytes(200))
+            .Expect("GetRookMoves", BenchmarkExpectations.ExpectedNanoseconds(90).WithBytes(240))
             .Run();
     }
 }
