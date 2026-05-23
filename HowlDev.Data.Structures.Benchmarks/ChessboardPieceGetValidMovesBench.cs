@@ -17,4 +17,6 @@ public class ChessboardPieceGetValidMovesBench {
     public int[] GetRookMoves() => board.GetValidMoves(63);
     [Benchmark]
     public int[] GetQueenMoves() => board.GetValidMoves(14);
+    [Benchmark]
+    public int[] GetPawnMoves() => board.GetValidMoves(44);
 }
