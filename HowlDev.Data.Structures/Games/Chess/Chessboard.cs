@@ -38,22 +38,15 @@ public class Chessboard : IEquatable<Chessboard> {
         if (piece is null) return [];
 
         (int row, int col) = ChessHelpers.IndexToRowCol(index);
-        switch (piece.Value.Piece) {
-            case ChessPiece.King:
-                return GetKingSpaces(row, col, piece.Value.White);
-            case ChessPiece.Queen:
-                return GetQueenSpaces(row, col, piece.Value.White);
-            case ChessPiece.Rook:
-                return GetRookSpaces(row, col, piece.Value.White);
-            case ChessPiece.Bishop:
-                return GetBishopSpaces(row, col, piece.Value.White);
-            case ChessPiece.Knight:
-                return GetKnightSpaces(row, col, piece.Value.White);
-            case ChessPiece.Pawn:
-                break;
-        }
-
-        return [];
+        return piece.Value.Piece switch {
+            ChessPiece.King => GetKingSpaces(row, col, piece.Value.White),
+            ChessPiece.Queen => GetQueenSpaces(row, col, piece.Value.White),
+            ChessPiece.Rook => GetRookSpaces(row, col, piece.Value.White),
+            ChessPiece.Bishop => GetBishopSpaces(row, col, piece.Value.White),
+            ChessPiece.Knight => GetKnightSpaces(row, col, piece.Value.White),
+            ChessPiece.Pawn => GetPawnSpaces(row, col, piece.Value.White),
+            _ => [],
+        };
     }
 
     public static Chessboard ReadFEN(string fen) {
@@ -127,6 +120,41 @@ public class Chessboard : IEquatable<Chessboard> {
             (-2, -1),  (-1, -2),
             ];
         return ValidateChecks(checks, row, col, white);
+    }
+
+    private int[] GetPawnSpaces(int row, int col, bool white) {
+        List<int> output = new(4);
+        int checks = white ? 1 : -1;
+
+        // Forward pieces
+        int newRow = row + checks;
+        (ChessPiece Piece, bool White)? piece = CheckSquare(newRow, col);
+        if (!piece.HasValue) {
+            output.Add(ChessHelpers.RowColToIndex(newRow, col));
+            if (white ? row == 2 : row == 7) {
+                piece = CheckSquare(newRow + checks, col); // Add it again for 2 in that direction
+                if (!piece.HasValue) {
+                    output.Add(ChessHelpers.RowColToIndex(newRow + checks, col));
+                }
+            }
+        }
+
+        // Targets
+        if (IsValidRowCol(newRow, col + 1)) {
+            piece = CheckSquare(newRow, col + 1);
+            if (piece.HasValue && piece.Value.White != white) {
+                output.Add(ChessHelpers.RowColToIndex(newRow, col + 1));
+            }
+        }
+
+        if (IsValidRowCol(newRow, col - 1)) {
+            piece = CheckSquare(newRow, col - 1);
+            if (piece.HasValue && piece.Value.White != white) {
+                output.Add(ChessHelpers.RowColToIndex(newRow, col - 1));
+            }
+        }
+
+        return [.. output];
     }
 
     /// <summary>

@@ -200,3 +200,85 @@ public class QueenTests {
         await Assert.That(queenMoves.Count).IsEqualTo(0);
     }
 }
+
+public class Tests {
+    [Test]
+    public async Task WhitePawnMovesFreeBoard() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4P3/8/8/8/8");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Pawn);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
+        int[] pawnMoves = c.GetValidMoves(36);
+        await Assert.That(pawnMoves.Count).IsEqualTo(1);
+            await Assert.That(pawnMoves.Contains(44)).IsTrue();
+    }
+
+    [Test]
+    public async Task BlackPawnMovesFreeBoard() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4p3/8/8/8/8");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Pawn);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(false);
+        int[] pawnMoves = c.GetValidMoves(36);
+        await Assert.That(pawnMoves.Count).IsEqualTo(1);
+            await Assert.That(pawnMoves.Contains(28)).IsTrue();
+    }
+
+    [Test]
+    public async Task WhitePawnMovesBlocked() {
+        Chessboard c = Chessboard.ReadFEN("8/8/4P3/4P3/8/8/8/8");
+        int[] pawnMoves = c.GetValidMoves(36);
+        await Assert.That(pawnMoves.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task BlackPawnMovesBlocked() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4p3/4P3/8/8/8");
+        int[] pawnMoves = c.GetValidMoves(36);
+        await Assert.That(pawnMoves.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    public async Task WhitePawnMovesTakes() {
+        Chessboard c = Chessboard.ReadFEN("8/8/3p1p2/4P3/8/8/8/8");
+        int[] pawnMoves = c.GetValidMoves(36);
+        int[] expMoves = [43, 44, 45];
+        await Assert.That(pawnMoves.Count).IsEqualTo(3);
+        foreach (int item in expMoves) {
+            await Assert.That(pawnMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task BlackPawnMovesTakes() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4p3/3P1P2/8/8/8");
+        int[] pawnMoves = c.GetValidMoves(36);
+        int[] expMoves = [27, 28, 29];
+        await Assert.That(pawnMoves.Count).IsEqualTo(3);
+        foreach (int item in expMoves) {
+            await Assert.That(pawnMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task WhitePawnMovesDefaultBoard() {
+        Chessboard c = new Chessboard();
+        int[] pawnMoves = c.GetValidMoves(50);
+        int[] expMoves = [42, 34];
+        await Assert.That(pawnMoves.Count).IsEqualTo(2);
+        foreach (int item in expMoves) {
+            await Assert.That(pawnMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task BlackPawnMovesDefaultBoard() {
+        Chessboard c = new Chessboard();
+        int[] pawnMoves = c.GetValidMoves(10);
+        int[] expMoves = [18, 26];
+        await Assert.That(pawnMoves.Count).IsEqualTo(2);
+        foreach (int item in expMoves) {
+            await Assert.That(pawnMoves.Contains(item)).IsTrue();
+        }
+    }
+}
