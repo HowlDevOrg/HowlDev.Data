@@ -106,10 +106,9 @@ public class Chessboard : IEquatable<Chessboard> {
 
     private int[] GetBishopSpaces(int row, int col, bool white) {
         return [
-          ..SearchUntil(row, col, -1, -1, !white),   
-          ..SearchUntil(row, col, 1, -1, !white),   
-          ..SearchUntil(row, col, -1, 1, !white),   
-          ..SearchUntil(row, col, 1, 1, !white),   
+          ..SearchUntil(row, col,
+          [(-1, -1), (1, -1), (-1, 1), (1, 1)],
+          !white)
         ];
     }
 
@@ -120,21 +119,27 @@ public class Chessboard : IEquatable<Chessboard> {
     /// <param name="colOffset"></param>
     /// <param name="opposingColor"></param>
     /// <returns></returns>
-    private List<int> SearchUntil(int startRow, int startCol, int rowOffset, int colOffset, bool opposingColor) {
-        List<int> possibleIndexes = new(7);
-        while (true) {
-            (int newRow, int newCol) = (startRow += rowOffset, startCol += colOffset); // += is intentional here
-            if (!IsValidRowCol(newRow, newCol)) return possibleIndexes;
-            int index = ChessHelpers.RowColToIndex(newRow, newCol);
-            byte piece = GetByteAtIndex(index);
-            if (piece == 0x00) {
-                possibleIndexes.Add(index);
-            } else {
-                bool white = ChessPieceConversion.PieceColor(piece);
-                if (white == opposingColor) possibleIndexes.Add(index);
-                return possibleIndexes;
+    private List<int> SearchUntil(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
+        List<int> possibleIndexes = new(7 * offsets.Length);
+        foreach ((int rowOffset, int colOffset) in offsets) {
+            int newStartRow = startRow;
+            int newStartCol = startCol;
+            while (true) {
+                (int newRow, int newCol) = (newStartRow += rowOffset, newStartCol += colOffset); // += is intentional here
+                if (!IsValidRowCol(newRow, newCol)) break;
+                int index = ChessHelpers.RowColToIndex(newRow, newCol);
+                byte piece = GetByteAtIndex(index);
+                if (piece == 0x00) {
+                    possibleIndexes.Add(index);
+                } else {
+                    bool white = ChessPieceConversion.PieceColor(piece);
+                    if (white == opposingColor) possibleIndexes.Add(index);
+                    break;
+                }
             }
         }
+
+        return possibleIndexes;
     }
 
     private int[] ValidateChecks((int, int)[] checks, int row, int col, bool white) {

@@ -18,7 +18,7 @@ public class Program {
         BenchmarkValidator.For<ChessboardPieceGetValidMovesBench>()
             .Expect("GetKingMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetKnightMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
-            .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(75).WithBytes(464))
+            .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(38).WithBytes(264))
             .Run();
     }
 }

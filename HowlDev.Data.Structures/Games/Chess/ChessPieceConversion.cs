@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 
-namespace HowlDev.Data.Structures.Games.Chess; 
+namespace HowlDev.Data.Structures.Games.Chess;
 
 // CHESS KEY: 
 // 0 = Empty Cell
@@ -37,12 +37,12 @@ public static class ChessPieceConversion {
         int checks = piece & 0x07;
         bool color = PieceColor(piece);
         return checks switch {
-            1 => color ? 'K' : 'k', 
-            2 => color ? 'Q' : 'q', 
-            3 => color ? 'B' : 'b', 
-            4 => color ? 'N' : 'n', 
-            5 => color ? 'R' : 'r', 
-            6 => color ? 'P' : 'p', 
+            1 => color ? 'K' : 'k',
+            2 => color ? 'Q' : 'q',
+            3 => color ? 'B' : 'b',
+            4 => color ? 'N' : 'n',
+            5 => color ? 'R' : 'r',
+            6 => color ? 'P' : 'p',
             _ => null
         };
     }

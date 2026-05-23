@@ -68,7 +68,7 @@ public static class ChessHelpers {
                 offset = true;
             }
         }
-        
+
         return newBoard;
     }
 
