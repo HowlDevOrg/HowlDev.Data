@@ -2,6 +2,21 @@ using System.Runtime.CompilerServices;
 
 namespace HowlDev.Data.Structures.Games.Chess;
 
+/* 
+NOTES for next time: 
+- Take in a start and end index, validate the move, and perform the action (writing to the byte array)
+- Create a helper class that takes in a move and returns a struct object to perform work
+    - index for action square 
+    - enum for state (check, checkmate)
+    - bool for capture
+    - enum for what piece to expect to perform the moving
+    - promotion piece for pawns
+- Take in a board and validate that the king is not in check in the current state
+- Take in a full FEN (and update allll my tests)
+- Convert to ChessGame (which will take some of these, like moves) and make it simpler
+    - Game should calculate and validate moves, Board should be a lookup
+*/
+
 public class Chessboard : IEquatable<Chessboard> {
     private byte[] board;
     private HashSet<(ChessPiece Piece, int index)> whitePieces = [];

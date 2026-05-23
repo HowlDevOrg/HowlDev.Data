@@ -3,7 +3,7 @@
 namespace HowlDev.Data.Structures.Benchmarks;
 
 public class Program {
-    public static void Main(string[] args) {
+    public static void Main(string[] _) {
         BenchmarkValidator.For<ChessboardHelpersBench>()
             .Expect("GetIndex", BenchmarkExpectations.ExpectedNanosecondsLessThan(0.1).WithBytes(0))
             .Expect("GetRowCol", BenchmarkExpectations.ExpectedNanosecondsLessThan(0.1).WithBytes(0))
