@@ -30,7 +30,7 @@ public class KingTests {
     [Test]
     public async Task KingMovesDefaultBoard() {
         Chessboard c = new Chessboard();
-        int[] kingMoves = c.GetValidMoves(5);
+        int[] kingMoves = c.GetValidMoves(4);
         await Assert.That(kingMoves.Count).IsEqualTo(0);
     }
 }
@@ -161,5 +161,42 @@ public class RookTests {
         Chessboard c = new Chessboard();
         int[] rookMoves = c.GetValidMoves(0);
         await Assert.That(rookMoves.Count).IsEqualTo(0);
+    }
+}
+
+public class QueenTests {
+    [Test]
+    public async Task QueenMoves1() {
+        Chessboard c = Chessboard.ReadFEN("8/8/8/4Q3/8/8/8/8");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Queen);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
+        int[] queenMoves = c.GetValidMoves(36);
+        int[] expMoves = [28, 20, 12, 4, 37, 38, 39, 35, 34, 33, 32, 44, 52, 60, 43, 50, 57, 45, 54, 63, 27, 18, 9, 0, 29, 22, 15];
+        await Assert.That(queenMoves.Count).IsEqualTo(27);
+        foreach (int item in expMoves) {
+            await Assert.That(queenMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task QueenMoves2() {
+        Chessboard c = Chessboard.ReadFEN("8/4p3/8/3pQ3/3p1P2/8/8/4K3");
+        await Assert.That(c.CheckSquare(36).HasValue).IsTrue();
+        await Assert.That(c.CheckSquare(36)!.Value.Piece).IsEqualTo(ChessPiece.Queen);
+        await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
+        int[] queenMoves = c.GetValidMoves(36);
+        int[] expMoves = [28, 27, 20, 12, 37, 38, 39, 35, 44, 52, 43, 50, 57, 45, 54, 63];
+        await Assert.That(queenMoves.Count).IsEqualTo(16);
+        foreach (int item in expMoves) {
+            await Assert.That(queenMoves.Contains(item)).IsTrue();
+        }
+    }
+
+    [Test]
+    public async Task QueenMovesDefaultBoard() {
+        Chessboard c = new Chessboard();
+        int[] queenMoves = c.GetValidMoves(3);
+        await Assert.That(queenMoves.Count).IsEqualTo(0);
     }
 }

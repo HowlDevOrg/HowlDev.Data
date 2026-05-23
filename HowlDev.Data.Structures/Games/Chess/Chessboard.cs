@@ -42,7 +42,7 @@ public class Chessboard : IEquatable<Chessboard> {
             case ChessPiece.King:
                 return GetKingSpaces(row, col, piece.Value.White);
             case ChessPiece.Queen:
-                break;
+                return GetQueenSpaces(row, col, piece.Value.White);
             case ChessPiece.Rook:
                 return GetRookSpaces(row, col, piece.Value.White);
             case ChessPiece.Bishop:
@@ -92,6 +92,15 @@ public class Chessboard : IEquatable<Chessboard> {
             (-1, -1), (-1, 0), (-1, 1),
             ];
         return ValidateChecks(checks, row, col, white);
+    }
+
+    private int[] GetQueenSpaces(int row, int col, bool white) {
+        return [
+          ..SearchUntil(row, col,
+          [(-1, 0), (1, 0), (0, -1), (0, 1),
+            (-1, -1), (1, -1), (-1, 1), (1, 1)],
+          !white)
+        ];
     }
 
     private int[] GetKnightSpaces(int row, int col, bool white) {
