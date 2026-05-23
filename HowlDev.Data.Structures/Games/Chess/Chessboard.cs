@@ -96,9 +96,25 @@ public class Chessboard : IEquatable<Chessboard> {
 
     private int[] GetQueenSpaces(int row, int col, bool white) {
         return [
-          ..SearchUntil(row, col,
+          ..SearchGettingPossibleMoves(row, col,
           [(-1, 0), (1, 0), (0, -1), (0, 1),
             (-1, -1), (1, -1), (-1, 1), (1, 1)],
+          !white)
+        ];
+    }
+
+    private int[] GetBishopSpaces(int row, int col, bool white) {
+        return [
+          ..SearchGettingPossibleMoves(row, col,
+          [(-1, -1), (1, -1), (-1, 1), (1, 1)],
+          !white)
+        ];
+    }
+
+    private int[] GetRookSpaces(int row, int col, bool white) {
+        return [
+          ..SearchGettingPossibleMoves(row, col,
+          [(-1, 0), (1, 0), (0, -1), (0, 1)],
           !white)
         ];
     }
@@ -113,26 +129,10 @@ public class Chessboard : IEquatable<Chessboard> {
         return ValidateChecks(checks, row, col, white);
     }
 
-    private int[] GetBishopSpaces(int row, int col, bool white) {
-        return [
-          ..SearchUntil(row, col,
-          [(-1, -1), (1, -1), (-1, 1), (1, 1)],
-          !white)
-        ];
-    }
-
-    private int[] GetRookSpaces(int row, int col, bool white) {
-        return [
-          ..SearchUntil(row, col,
-          [(-1, 0), (1, 0), (0, -1), (0, 1)],
-          !white)
-        ];
-    }
-
     /// <summary>
     /// Returns a list of possible moves in the given direction(s). 
     /// </summary>
-    private IEnumerable<int> SearchUntil(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
+    private IEnumerable<int> SearchGettingPossibleMoves(int startRow, int startCol, (int rowOffset, int colOffset)[] offsets, bool opposingColor) {
         foreach ((int rowOffset, int colOffset) in offsets) {
             int newStartRow = startRow;
             int newStartCol = startCol;
