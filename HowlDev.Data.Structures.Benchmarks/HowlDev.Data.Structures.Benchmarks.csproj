@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HowlDev.Quality.Benchmarking" Version="0.1.0" />
+    <PackageReference Include="HowlDev.Quality.Benchmarking" Version="0.2.0" />
   </ItemGroup>
 
 </Project>

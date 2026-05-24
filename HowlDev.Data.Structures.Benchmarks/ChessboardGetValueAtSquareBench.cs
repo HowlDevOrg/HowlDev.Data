@@ -3,8 +3,6 @@ using HowlDev.Data.Structures.Games.Chess;
 
 namespace HowlDev.Data.Structures.Benchmarks;
 
-[MemoryDiagnoser]
-[ShortRunJob]
 public class ChessboardGetValueAtSquareBench {
     private Chessboard board;
     public ChessboardGetValueAtSquareBench() {

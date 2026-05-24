@@ -5,17 +5,23 @@ namespace HowlDev.Data.Structures.Benchmarks;
 public class Program {
     public static void Main(string[] _) {
         BenchmarkValidator.For<ChessboardHelpersBench>()
+            .WithProfile(BenchmarkProfiles.SilentShortRun)
+            .WithMemoryDiagnoser()
             .Expect("GetIndex", BenchmarkExpectations.ExpectedNanosecondsLessThan(0.1).WithBytes(0))
             .Expect("GetRowCol", BenchmarkExpectations.ExpectedNanosecondsLessThan(0.1).WithBytes(0))
             .Run();
 
         BenchmarkValidator.For<ChessboardGetValueAtSquareBench>()
+            .WithProfile(BenchmarkProfiles.SilentShortRun)
+            .WithMemoryDiagnoser()
             .Expect("GetSquareReadonlyInlineStart", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
             .Expect("GetSquareReadonlyInlineReturnsNull", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
             .Expect("GetSquareReadonlyInlineEnd", BenchmarkExpectations.ExpectedBytes(0).WithNanosecondsLessThan(1))
             .Run();
 
         BenchmarkValidator.For<ChessboardPieceGetValidMovesBench>()
+            .WithProfile(BenchmarkProfiles.SilentShortRun)
+            .WithMemoryDiagnoser()
             .Expect("GetKingMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetKnightMoves", BenchmarkExpectations.ExpectedNanoseconds(35).WithBytes(144))
             .Expect("GetBishopMoves", BenchmarkExpectations.ExpectedNanoseconds(52).WithBytes(200))

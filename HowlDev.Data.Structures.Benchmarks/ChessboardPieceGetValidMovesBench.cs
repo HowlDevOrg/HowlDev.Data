@@ -3,8 +3,6 @@ using HowlDev.Data.Structures.Games.Chess;
 
 namespace HowlDev.Data.Structures.Benchmarks;
 
-[MemoryDiagnoser]
-[ShortRunJob]
 public class ChessboardPieceGetValidMovesBench {
     private Chessboard board = Chessboard.ReadFEN("7r/8/4P3/4K3/3p4/2N5/6Q1/4B3");
     [Benchmark]
