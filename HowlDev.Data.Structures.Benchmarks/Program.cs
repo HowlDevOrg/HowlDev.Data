@@ -29,5 +29,12 @@ public class Program {
             .Expect("GetQueenMoves", BenchmarkExpectations.ExpectedNanoseconds(130).WithBytes(312))
             .Expect("GetPawnMoves", BenchmarkExpectations.ExpectedNanoseconds(25).WithBytes(104))
             .Run();
+
+        BenchmarkValidator.For<ChessMoveBench>()
+            .WithProfile(BenchmarkProfiles.ShortRun)
+            .WithMemoryDiagnoser()
+            .WithoutLogOutput()
+            .Expect("DefaultMove", BenchmarkExpectations.ExpectedNanoseconds(175).WithBytes(896))
+            .Run();
     }
 }
