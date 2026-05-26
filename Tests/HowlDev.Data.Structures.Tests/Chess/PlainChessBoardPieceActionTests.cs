@@ -10,10 +10,7 @@ public class KingTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] kingMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 44, 45, 35, 37, 27, 28, 29];
-        await Assert.That(kingMoves.Count).IsEqualTo(8);
-        foreach (int item in expMoves) {
-            await Assert.That(kingMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(kingMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -21,10 +18,7 @@ public class KingTests {
         Chessboard c = Chessboard.ReadFEN("8/8/4P3/4K3/3p4/8/8/8");
         int[] kingMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 45, 35, 37, 27, 28, 29];
-        await Assert.That(kingMoves.Count).IsEqualTo(7);
-        foreach (int item in expMoves) {
-            await Assert.That(kingMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(kingMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -44,10 +38,7 @@ public class KnightTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] knightMoves = c.GetValidMoves(36);
         int[] expMoves = [42, 51, 53, 46, 30, 21, 19, 26];
-        await Assert.That(knightMoves.Count).IsEqualTo(8);
-        foreach (int item in expMoves) {
-            await Assert.That(knightMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(knightMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -58,21 +49,15 @@ public class KnightTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] knightMoves = c.GetValidMoves(36);
         int[] expMoves = [42, 51, 53, 46, 30, 19, 26];
-        await Assert.That(knightMoves.Count).IsEqualTo(7);
-        foreach (int item in expMoves) {
-            await Assert.That(knightMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(knightMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
     public async Task KnightMovesDefaultBoard() {
         Chessboard c = new Chessboard();
         int[] knightMoves = c.GetValidMoves(1);
-        await Assert.That(knightMoves.Count).IsEqualTo(2);
         int[] expMoves = [16, 18];
-        foreach (int item in expMoves) {
-            await Assert.That(knightMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(knightMoves).IsEquivalentTo(expMoves);
     }
 }
 
@@ -85,10 +70,7 @@ public class BishopTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] bishopMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 50, 57, 45, 54, 63, 27, 18, 9, 0, 29, 22, 15];
-        await Assert.That(bishopMoves.Count).IsEqualTo(13);
-        foreach (int item in expMoves) {
-            await Assert.That(bishopMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(bishopMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -99,10 +81,7 @@ public class BishopTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] bishopMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 27];
-        await Assert.That(bishopMoves.Count).IsEqualTo(2);
-        foreach (int item in expMoves) {
-            await Assert.That(bishopMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(bishopMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -113,10 +92,7 @@ public class BishopTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] bishopMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 50, 57, 45, 54, 27, 18, 9, 0, 29, 22, 15];
-        await Assert.That(bishopMoves.Count).IsEqualTo(12);
-        foreach (int item in expMoves) {
-            await Assert.That(bishopMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(bishopMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -136,10 +112,7 @@ public class RookTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] rookMoves = c.GetValidMoves(36);
         int[] expMoves = [28, 20, 12, 4, 37, 38, 39, 35, 34, 33, 32, 44, 52, 60];
-        await Assert.That(rookMoves.Count).IsEqualTo(14);
-        foreach (int item in expMoves) {
-            await Assert.That(rookMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(rookMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -150,10 +123,7 @@ public class RookTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] rookMoves = c.GetValidMoves(36);
         int[] expMoves = [28, 20, 12, 37, 38, 39, 35, 44, 52];
-        await Assert.That(rookMoves.Count).IsEqualTo(9);
-        foreach (int item in expMoves) {
-            await Assert.That(rookMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(rookMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -173,10 +143,7 @@ public class QueenTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] queenMoves = c.GetValidMoves(36);
         int[] expMoves = [28, 20, 12, 4, 37, 38, 39, 35, 34, 33, 32, 44, 52, 60, 43, 50, 57, 45, 54, 63, 27, 18, 9, 0, 29, 22, 15];
-        await Assert.That(queenMoves.Count).IsEqualTo(27);
-        foreach (int item in expMoves) {
-            await Assert.That(queenMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(queenMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -187,10 +154,7 @@ public class QueenTests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] queenMoves = c.GetValidMoves(36);
         int[] expMoves = [28, 27, 20, 12, 37, 38, 39, 35, 44, 52, 43, 50, 57, 45, 54, 63];
-        await Assert.That(queenMoves.Count).IsEqualTo(16);
-        foreach (int item in expMoves) {
-            await Assert.That(queenMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(queenMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -210,7 +174,7 @@ public class Tests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(true);
         int[] pawnMoves = c.GetValidMoves(36);
         await Assert.That(pawnMoves.Count).IsEqualTo(1);
-            await Assert.That(pawnMoves.Contains(44)).IsTrue();
+        await Assert.That(pawnMoves.Contains(44)).IsTrue();
     }
 
     [Test]
@@ -221,7 +185,7 @@ public class Tests {
         await Assert.That(c.CheckSquare(36)!.Value.White).IsEqualTo(false);
         int[] pawnMoves = c.GetValidMoves(36);
         await Assert.That(pawnMoves.Count).IsEqualTo(1);
-            await Assert.That(pawnMoves.Contains(28)).IsTrue();
+        await Assert.That(pawnMoves.Contains(28)).IsTrue();
     }
 
     [Test]
@@ -243,10 +207,7 @@ public class Tests {
         Chessboard c = Chessboard.ReadFEN("8/8/3p1p2/4P3/8/8/8/8");
         int[] pawnMoves = c.GetValidMoves(36);
         int[] expMoves = [43, 44, 45];
-        await Assert.That(pawnMoves.Count).IsEqualTo(3);
-        foreach (int item in expMoves) {
-            await Assert.That(pawnMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(pawnMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -254,10 +215,7 @@ public class Tests {
         Chessboard c = Chessboard.ReadFEN("8/8/8/4p3/3P1P2/8/8/8");
         int[] pawnMoves = c.GetValidMoves(36);
         int[] expMoves = [27, 28, 29];
-        await Assert.That(pawnMoves.Count).IsEqualTo(3);
-        foreach (int item in expMoves) {
-            await Assert.That(pawnMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(pawnMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -265,10 +223,7 @@ public class Tests {
         Chessboard c = new Chessboard();
         int[] pawnMoves = c.GetValidMoves(50);
         int[] expMoves = [42, 34];
-        await Assert.That(pawnMoves.Count).IsEqualTo(2);
-        foreach (int item in expMoves) {
-            await Assert.That(pawnMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(pawnMoves).IsEquivalentTo(expMoves);
     }
 
     [Test]
@@ -276,9 +231,6 @@ public class Tests {
         Chessboard c = new Chessboard();
         int[] pawnMoves = c.GetValidMoves(10);
         int[] expMoves = [18, 26];
-        await Assert.That(pawnMoves.Count).IsEqualTo(2);
-        foreach (int item in expMoves) {
-            await Assert.That(pawnMoves.Contains(item)).IsTrue();
-        }
+        await Assert.That(pawnMoves).IsEquivalentTo(expMoves);
     }
 }
