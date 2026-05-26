@@ -2,7 +2,6 @@ using BenchmarkDotNet.Attributes;
 using HowlDev.Data.Structures.Games.Chess;
 
 namespace HowlDev.Data.Structures.Benchmarks;
-#pragma warning disable CA1822
 
 public class ChessboardHelpersBench {
     [Benchmark]
