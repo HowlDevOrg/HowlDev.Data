@@ -7,22 +7,46 @@ public readonly partial struct ChessMove : IEquatable<ChessMove> {
     public readonly ChessPiece Piece { get; }
     public readonly bool Captures { get; }
     public readonly IEnumerable<int> PossibleStartLocations { get; }
-    public ChessMove(string move) {
-        Match match = ChessNotationRegex().Match(move);
+    public ChessMove(ReadOnlySpan<char> move) {
+        Match match = ChessNotationRegex().Match(move.ToString());
         if (move.Contains('x')) Captures = true;
-        ToIndex = ChessHelpers.CharToIndex(match.Groups[4].Value);
-        Piece = GetPiece(match.Groups[1].ValueSpan);
-        PossibleStartLocations = [
-            35
-        ];
+        GroupCollection groups = match.Groups;
+        ToIndex = ChessHelpers.CharToIndex(groups[4].ValueSpan);
+        Piece = GetPiece(groups[1].ValueSpan);
+        if (groups[2].Success || groups[3].Success) {
+            PossibleStartLocations = [.. GetPossibleIndexes(ToIndex, groups[2].Value, groups[3].Value, Piece)];
+        } else {
+            PossibleStartLocations = [];
+        }
     }
 
-    public static ChessPiece GetPiece(ReadOnlySpan<char> piece) {
+    private static ChessPiece GetPiece(ReadOnlySpan<char> piece) {
         return piece switch {
-            "" => ChessPiece.Pawn, 
+            "" => ChessPiece.Pawn,
             _ => throw new Exception("Invalid calling piece")
         };
     }
+
+    private static IEnumerable<int> GetPossibleIndexes(int targetIndex, string col, string row, ChessPiece piece) {
+        (int targetRow, int targetCol) = ChessHelpers.IndexToRowCol(targetIndex);
+        (int intRow, int intCol) = (targetRow, targetCol); // Want to remove this line
+        if (col != "") intCol = ChessHelpers.GetColumn(col[0]);
+        if (row != "") intRow = ChessHelpers.GetRow(row[0]);
+        switch (piece) {
+            case ChessPiece.Pawn:
+                if (Math.Abs(targetCol - intCol) != 1) throw new InvalidOperationException("Pawns can only take diagonally in a next-to row.");
+
+                yield return ChessHelpers.RowColToIndex(intRow - 1, intCol);
+                yield return ChessHelpers.RowColToIndex(intRow + 1, intCol);
+
+                break;
+            default:
+                throw new Exception("Invalid piece argument.");
+        }
+
+        yield break;
+    }
+
 
     [GeneratedRegex(@"^([NBRQK])?([a-h])?([1-8])?x?([a-h][1-8])=?([NBRQK])?([+#])?$", RegexOptions.Singleline)]
     public static partial Regex ChessNotationRegex();

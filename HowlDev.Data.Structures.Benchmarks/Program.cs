@@ -34,7 +34,7 @@ public class Program {
             .WithProfile(BenchmarkProfiles.ShortRun)
             .WithMemoryDiagnoser()
             .WithoutLogOutput()
-            .Expect("DefaultMove", BenchmarkExpectations.ExpectedNanoseconds(175).WithBytes(896))
+            .Expect("DefaultMove", BenchmarkExpectations.ExpectedNanoseconds(175).WithBytes(928))
             .Run();
     }
 }

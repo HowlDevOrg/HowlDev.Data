@@ -1,5 +1,5 @@
 using HowlDev.Data.Structures.Games.Chess;
-namespace HowlDev.Data.Structures.Tests.Chess;
+namespace HowlDev.Data.Structures.Tests.Chess.ChessMoveTests;
 
 public class PawnChessMoveTests {
     [Test]
@@ -19,14 +19,27 @@ public class PawnChessMoveTests {
         ChessMove move = new ChessMove(input);
         await Assert.That(move.ToIndex).IsEqualTo(expIndex);
         await Assert.That(move.Piece).IsEqualTo(ChessPiece.Pawn);
-        await Assert.That(move.PossibleStartLocations.Count()).IsEqualTo(possibleStartLocations.Length);
-        for (int i = 0; i < possibleStartLocations.Length; i++) {
-            await Assert.That(move.PossibleStartLocations.Contains(possibleStartLocations[i])).IsTrue();
-        }
+        await Assert.That(move.PossibleStartLocations).IsEquivalentTo(possibleStartLocations);
+    }
+
+    [Test]
+    [Arguments("axc3")]
+    [Arguments("cxc4")]
+    [Arguments("axh5")]
+    [Arguments("exc6")]
+    [Arguments("exg2")]
+    [Arguments("cxa3")]
+    public async Task PawnCaptureThrowsErrorsWhenNotNextTo(string input) {
+        await Assert.That(() => new ChessMove(input))
+            .Throws<InvalidOperationException>();
     }
 
     public static IEnumerable<Func<(string, int, int[])>> GetPawnCaptureSource() {
-        yield return () => ("dxc6", 42, [35]);
-        yield return () => ("bxc6", 42, [33]);
+        yield return () => ("dxc6", 42, [35, 51]);
+        yield return () => ("bxc6", 42, [33, 49]);
+        yield return () => ("axb3", 17, [8, 24]);
+        yield return () => ("bxa3", 16, [9, 25]);
+        yield return () => ("gxh5", 39, [30, 46]);
+        yield return () => ("hxg5", 38, [31, 47]);
     }
 }

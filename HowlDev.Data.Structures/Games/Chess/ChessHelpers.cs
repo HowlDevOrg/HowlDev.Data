@@ -9,18 +9,18 @@ public static class ChessHelpers {
     /// </summary>
     /// <exception cref="ArgumentException"></exception>
     /// <exception cref="InvalidDataException"></exception>
-    public static int CharToIndex(string position) {
+    public static int CharToIndex(ReadOnlySpan<char> position) {
         if (position.Length != 2) throw new ArgumentException("Position is expected to be 2 characters.");
 
-        int column = position[0] - 96;
-        int row = position[1] - 48;
+        int column = GetColumn(position[0]);
+        int row = GetRow(position[1]);
         return RowColToIndex(row, column);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int RowColToIndex(int row, int col) {
-        if (row < 1 || row > 8) ThrowRowException();
-        if (col < 1 || col > 8) ThrowColException();
+        if (RowOrColIsOutOfRange(row)) ThrowRowException();
+        if (RowOrColIsOutOfRange(col)) ThrowColException();
 
         return (row - 1) * 8 + col - 1;
     }
@@ -30,6 +30,21 @@ public static class ChessHelpers {
         if (index < 0 || index > 63) ThrowIndexException();
         (int quot, int rem) = Math.DivRem(index, 8);
         return (quot + 1, rem + 1);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetColumn(char col) {
+        return col - 96;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int GetRow(char row) {
+        return row - 48;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool RowOrColIsOutOfRange(int value) {
+        return value < 1 || value > 8;
     }
 
     // Not optimized/benchmarked in any way, just returns an enumerable. 
