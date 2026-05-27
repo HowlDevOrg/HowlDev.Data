@@ -6,50 +6,67 @@ public readonly partial struct ChessMove : IEquatable<ChessMove> {
     public readonly int ToIndex { get; }
     public readonly ChessPiece Piece { get; }
     public readonly bool Captures { get; }
+    public readonly KingStatus KingStatus { get; }
     public readonly IEnumerable<int> PossibleStartLocations { get; }
     public ChessMove(ReadOnlySpan<char> move) {
         Match match = ChessNotationRegex().Match(move.ToString());
-        if (move.Contains('x')) Captures = true;
         GroupCollection groups = match.Groups;
-        ToIndex = ChessHelpers.CharToIndex(groups[4].ValueSpan);
+        Captures = !string.IsNullOrWhiteSpace(groups[4].Value);
+        ToIndex = ChessHelpers.CharToIndex(groups[5].ValueSpan);
         Piece = GetPiece(groups[1].ValueSpan);
-        if (groups[2].Success || groups[3].Success) {
-            PossibleStartLocations = [.. GetPossibleIndexes(ToIndex, groups[2].Value, groups[3].Value, Piece)];
-        } else {
-            PossibleStartLocations = [];
+        PossibleStartLocations = GetPossibleIndexes(groups[2].Value, groups[3].Value);
+        KingStatus = GetKingStatus(groups[7].ValueSpan);
+    }
+
+    private IEnumerable<int> GetPossibleIndexes(string col, string row) {
+        (int targetRow, int targetCol) = ChessHelpers.IndexToRowCol(ToIndex);
+        (int intRow, int intCol) = (targetRow, targetCol); // Want to remove this line
+        if (col != "") intCol = ChessHelpers.GetColumn(col[0]);
+        if (row != "") intRow = ChessHelpers.GetRow(row[0]);
+        switch (Piece) {
+            case ChessPiece.Pawn:
+                if (Captures) {
+                    if (Math.Abs(targetCol - intCol) != 1) Throw.PawnDiagonalizedError();
+                    yield return ChessHelpers.RowColToIndex(intRow - 1, intCol);
+                    yield return ChessHelpers.RowColToIndex(intRow + 1, intCol);
+                } else {
+                    if (intRow == 7) {
+                        yield return ChessHelpers.RowColToIndex(6, intCol);
+                    } else if (intRow == 2) {
+                        yield return ChessHelpers.RowColToIndex(3, intCol);
+                    } else {
+                        if (intRow == 4) yield return ChessHelpers.RowColToIndex(2, intCol);
+                        if (intRow == 5) yield return ChessHelpers.RowColToIndex(7, intCol);
+                        yield return ChessHelpers.RowColToIndex(intRow + 1, intCol);
+                        yield return ChessHelpers.RowColToIndex(intRow - 1, intCol);
+                    }
+                }
+
+                yield break;
+            default:
+                Throw.InvalidPieceError();
+                yield break;
         }
     }
 
     private static ChessPiece GetPiece(ReadOnlySpan<char> piece) {
         return piece switch {
             "" => ChessPiece.Pawn,
-            _ => throw new Exception("Invalid calling piece")
+            _ => Throw.InvalidPieceError()
         };
     }
 
-    private static IEnumerable<int> GetPossibleIndexes(int targetIndex, string col, string row, ChessPiece piece) {
-        (int targetRow, int targetCol) = ChessHelpers.IndexToRowCol(targetIndex);
-        (int intRow, int intCol) = (targetRow, targetCol); // Want to remove this line
-        if (col != "") intCol = ChessHelpers.GetColumn(col[0]);
-        if (row != "") intRow = ChessHelpers.GetRow(row[0]);
-        switch (piece) {
-            case ChessPiece.Pawn:
-                if (Math.Abs(targetCol - intCol) != 1) throw new InvalidOperationException("Pawns can only take diagonally in a next-to row.");
-
-                yield return ChessHelpers.RowColToIndex(intRow - 1, intCol);
-                yield return ChessHelpers.RowColToIndex(intRow + 1, intCol);
-
-                break;
-            default:
-                throw new Exception("Invalid piece argument.");
-        }
-
-        yield break;
+    private static KingStatus GetKingStatus(ReadOnlySpan<char> status) {
+        return status switch {
+            "" => KingStatus.None,
+            "+" => KingStatus.Check,
+            "#" => KingStatus.Checkmate,
+            _ => Throw.InvalidKingStatus(status)
+        };
     }
 
-
-    [GeneratedRegex(@"^([NBRQK])?([a-h])?([1-8])?x?([a-h][1-8])=?([NBRQK])?([+#])?$", RegexOptions.Singleline)]
-    public static partial Regex ChessNotationRegex();
+    [GeneratedRegex(@"^([NBRQK])?([a-h])?([1-8])?(x)?([a-h][1-8])=?([NBRQK])?([+#])?$", RegexOptions.Singleline)]
+    private static partial Regex ChessNotationRegex();
 
     public static bool operator !=(ChessMove left, ChessMove right) {
         return !left.Equals(right);
