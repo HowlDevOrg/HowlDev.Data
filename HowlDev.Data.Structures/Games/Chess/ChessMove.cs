@@ -5,6 +5,7 @@ namespace HowlDev.Data.Structures.Games.Chess;
 public readonly partial struct ChessMove : IEquatable<ChessMove> {
     public readonly int ToIndex { get; }
     public readonly ChessPiece Piece { get; }
+    public readonly ChessPiece? PromotionPiece { get; }
     public readonly bool Captures { get; }
     public readonly KingStatus KingStatus { get; }
     public readonly IEnumerable<int> PossibleStartLocations { get; }
@@ -15,6 +16,12 @@ public readonly partial struct ChessMove : IEquatable<ChessMove> {
         ToIndex = ChessHelpers.CharToIndex(groups[5].ValueSpan);
         Piece = GetPiece(groups[1].ValueSpan);
         PossibleStartLocations = GetPossibleIndexes(groups[2].Value, groups[3].Value);
+        if (groups[6].Value != "") {
+            PromotionPiece = ChessHelpers.CharToPiece(groups[6].ValueSpan[0]).Piece;
+        } else {
+            PromotionPiece = null;
+        }
+
         KingStatus = GetKingStatus(groups[7].ValueSpan);
     }
 

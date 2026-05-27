@@ -19,15 +19,15 @@ public static class ChessHelpers {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int RowColToIndex(int row, int col) {
-        if (RowOrColIsOutOfRange(row)) ThrowRowException();
-        if (RowOrColIsOutOfRange(col)) ThrowColException();
+        if (RowOrColIsOutOfRange(row)) Throw.RowException();
+        if (RowOrColIsOutOfRange(col)) Throw.ColException();
 
         return (row - 1) * 8 + col - 1;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static (int row, int col) IndexToRowCol(int index) {
-        if (index < 0 || index > 63) ThrowIndexException();
+        if (index < 0 || index > 63) Throw.IndexException();
         (int quot, int rem) = Math.DivRem(index, 8);
         return (quot + 1, rem + 1);
     }
@@ -70,7 +70,7 @@ public static class ChessHelpers {
         byte currentPiece = 0x00;
         bool offset = false;
         int index = 0;
-        foreach ((ChessPiece Piece, bool White)? item in ChessHelpers.ParseFENNotation(fen)) {
+        foreach ((ChessPiece Piece, bool White)? item in ParseFENNotation(fen)) {
             byte newPiece = item.HasValue ? ChessPieceConversion.GetByte(item.Value.Piece, item.Value.White) : (byte)0x00;
             if (offset) {
                 currentPiece = (byte)(currentPiece << 4);
@@ -87,7 +87,7 @@ public static class ChessHelpers {
         return newBoard;
     }
 
-    private static (ChessPiece Piece, bool White) CharToPiece(char piece) {
+    public static (ChessPiece Piece, bool White) CharToPiece(char piece) {
         return piece switch {
             'K' => (ChessPiece.King, true),
             'Q' => (ChessPiece.Queen, true),
@@ -101,14 +101,7 @@ public static class ChessHelpers {
             'n' => (ChessPiece.Knight, false),
             'r' => (ChessPiece.Rook, false),
             'p' => (ChessPiece.Pawn, false),
-            _ => throw new InvalidDataException($"Can't read piece type {piece}.")
+            _ => Throw.InvalidPieceType(piece)
         };
     }
-
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static void ThrowRowException() => throw new InvalidDataException($"Row must be between 1 and 8 inclusive.");
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static void ThrowColException() => throw new InvalidDataException($"Column must be between 1 and 8 inclusive.");
-    [MethodImpl(MethodImplOptions.NoInlining)]
-    private static void ThrowIndexException() => throw new InvalidDataException($"Index must be between 0 and 63 inclusive.");
 }

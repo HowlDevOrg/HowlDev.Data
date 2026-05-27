@@ -9,6 +9,7 @@ public class PawnChessMoveTests {
         await Assert.That(move.ToIndex).IsEqualTo(expIndex);
         await Assert.That(move.Piece).IsEqualTo(ChessPiece.Pawn);
         await Assert.That(move.Captures).IsFalse();
+        await Assert.That(move.PromotionPiece).IsNull();
         await Assert.That(move.PossibleStartLocations).IsEquivalentTo(possibleStartLocations);
     }
 
@@ -19,8 +20,9 @@ public class PawnChessMoveTests {
         await Assert.That(move.ToIndex).IsEqualTo(expIndex);
         await Assert.That(move.Piece).IsEqualTo(ChessPiece.Pawn);
         await Assert.That(move.Captures).IsTrue();
+        await Assert.That(move.PromotionPiece).IsNull();
         await Assert.That(move.PossibleStartLocations).IsEquivalentTo(possibleStartLocations);
-    } 
+    }
 
     [Test]
     [Arguments("c3", KingStatus.None)]
@@ -44,6 +46,18 @@ public class PawnChessMoveTests {
     public async Task PawnCaptureWithKingStatus(string input, KingStatus expStatus) {
         ChessMove move = new ChessMove(input);
         await Assert.That(move.KingStatus).IsEqualTo(expStatus);
+    }
+
+    [Test]
+    [Arguments("c8=Q", 58, ChessPiece.Queen)]
+    [Arguments("a1=N", 0, ChessPiece.Knight)]
+    [Arguments("a8=R", 56, ChessPiece.Rook)]
+    [Arguments("f8=Q", 61, ChessPiece.Queen)]
+    [Arguments("h1=N", 7, ChessPiece.Knight)]
+    public async Task PawnPromotion(string input, int expIndex, ChessPiece expPiece) {
+        ChessMove move = new ChessMove(input);
+        await Assert.That(move.ToIndex).IsEqualTo(expIndex);
+        await Assert.That(move.PromotionPiece).IsEqualTo(expPiece);
     }
 
     [Test]

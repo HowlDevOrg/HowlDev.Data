@@ -1,7 +1,7 @@
 namespace HowlDev.Data.Structures.Games.Chess;
 
 public enum KingStatus {
-    None, 
-    Check, 
+    None,
+    Check,
     Checkmate
 }

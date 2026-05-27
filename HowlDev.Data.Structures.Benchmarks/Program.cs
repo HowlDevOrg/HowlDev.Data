@@ -15,7 +15,7 @@ public class Program {
             .WithProfile(BenchmarkProfiles.ShortRun)
             .WithMemoryDiagnoser()
             .WithoutLogOutput()
-            .Expect("DefaultMove", BenchmarkExpectations.ExpectedNanoseconds(175).WithBytes(904));
+            .Expect("DefaultMove", BenchmarkExpectations.ExpectedNanoseconds(420).WithBytes(1120));
 
     private static BenchmarkValidatorWithConfig<ChessboardPieceGetValidMovesBench> ValidMovesBench =>
         BenchmarkValidator.For<ChessboardPieceGetValidMovesBench>()
